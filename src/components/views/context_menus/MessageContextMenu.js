@@ -195,10 +195,12 @@ module.exports = React.createClass({
         this.closeMenu();
     },
 
-    onReplyClick: function() {
-        dis.dispatch({
-            action: 'reply_to_event',
-            event: this.props.mxEvent,
+    onPermalinkClick: function(e: Event) {
+        e.preventDefault();
+        const ShareDialog = sdk.getComponent("dialogs.ShareDialog");
+        Modal.createTrackedDialog('share room message dialog', '', ShareDialog, {
+            target: this.props.mxEvent,
+            permalinkCreator: this.props.permalinkCreator,
         });
         this.closeMenu();
     },
@@ -239,7 +241,6 @@ module.exports = React.createClass({
         let unhidePreviewButton;
         let externalURLButton;
         let quoteButton;
-        let replyButton;
         let collapseReplyThread;
 
         // status is SENT before remote-echo, null after
@@ -275,12 +276,6 @@ module.exports = React.createClass({
                 forwardButton = (
                     <div className="mx_MessageContextMenu_field mx_MessageContextMenu_field_icon mx_MessageContextMenu_field_forward" onClick={this.onForwardClick}>
                         { _t('Forward Message') }
-                    </div>
-                );
-
-                replyButton = (
-                    <div className="mx_MessageContextMenu_field mx_MessageContextMenu_field_icon mx_MessageContextMenu_field_reply" onClick={this.onReplyClick}>
-                        { _t('Reply') }
                     </div>
                 );
 
@@ -387,7 +382,6 @@ module.exports = React.createClass({
                 { unhidePreviewButton }
                 { permalinkButton }
                 { quoteButton }
-                { replyButton }
                 { externalURLButton }
                 { collapseReplyThread }
             </div>
