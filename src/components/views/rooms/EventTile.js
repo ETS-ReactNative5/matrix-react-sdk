@@ -624,6 +624,14 @@ module.exports = withMatrixClient(React.createClass({
                 <ToolTipButton helpText={keyRequestHelpText} />
             </div> : null;
 
+        let reactions;
+        if (SettingsStore.isFeatureEnabled("feature_reactions")) {
+            const ReactionsRow = sdk.getComponent('messages.ReactionsRow');
+            reactions = <ReactionsRow
+                mxEvent={this.props.mxEvent}
+            />;
+        }
+
         switch (this.props.tileShape) {
             case 'notif': {
                 const EmojiText = sdk.getComponent('elements.EmojiText');
@@ -736,6 +744,8 @@ module.exports = withMatrixClient(React.createClass({
                                            showUrlPreview={this.props.showUrlPreview}
                                            onHeightChanged={this.props.onHeightChanged} />
                             { keyRequestInfo }
+                            { editButton }
+                            { reactions }
                             { actionBar }
                         </div>
                         {
