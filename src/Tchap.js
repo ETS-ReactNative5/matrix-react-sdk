@@ -56,17 +56,15 @@ class Tchap {
             const tchapHostsList = this._shuffle(SdkConfig.get()['hs_url_list']);
             if (tchapHostsList) {
                 const promises = tchapHostsList.map(url => this._httpRequest(hostBase + url + infoUrl + email, {}));
-                Promise.all(promises).then(data => {
+                Promise.race(promises).then(data => {
                     let hs = null;
                     let err = null;
-                    for (let i = 0; i <= data.length; i++) {
-                        if (data[i] && data[i].hs && data[i].hs !== "" && data[i].hs !== null) {
-                            hs = data[i].hs;
-                        } else if (data[i] && (data[i].hs === "" || data[i].hs === null)) {
-                            err = ("ERR_UNAUTHORIZED_EMAIL");
-                        } else {
-                            err = ("ERR_UNREACHABLE_HOMESERVER");
-                        }
+                    if (data && data.hs && data.hs !== "" && data.hs !== null) {
+                        hs = data.hs;
+                    } else if (data && (data.hs === "" || data.hs === null)) {
+                        err = ("ERR_UNAUTHORIZED_EMAIL");
+                    } else {
+                        err = ("ERR_UNREACHABLE_HOMESERVER");
                     }
                     if (hs !== null) {
                         resolve(hostBase + hs);
