@@ -744,7 +744,6 @@ module.exports = withMatrixClient(React.createClass({
                                            showUrlPreview={this.props.showUrlPreview}
                                            onHeightChanged={this.props.onHeightChanged} />
                             { keyRequestInfo }
-                            { editButton }
                             { reactions }
                             { actionBar }
                         </div>

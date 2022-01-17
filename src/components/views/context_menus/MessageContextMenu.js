@@ -242,7 +242,8 @@ module.exports = React.createClass({
         let unhidePreviewButton;
         let externalURLButton;
         let quoteButton;
-        let collapseReplyThread;
+        let replyButton;
+	let collapseReplyThread;
 
         // status is SENT before remote-echo, null after
         const isSent = !eventStatus || eventStatus === EventStatus.SENT;
