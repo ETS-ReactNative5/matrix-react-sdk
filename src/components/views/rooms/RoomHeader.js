@@ -33,7 +33,6 @@ import RoomHeaderButtons from '../right_panel/RoomHeaderButtons';
 import E2EIcon from './E2EIcon';
 import DMRoomMap from '../../../utils/DMRoomMap';
 import Tchap from '../../../Tchap';
-import Modal from "../../../Modal";
 
 module.exports = React.createClass({
     displayName: 'RoomHeader',

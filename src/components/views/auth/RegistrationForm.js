@@ -70,7 +70,7 @@ module.exports = React.createClass({
             email: "",
             password: "",
             passwordConfirm: "",
-            isExtern: false
+            isExtern: false,
             passwordComplexity: null,
             passwordSafe: false,
         };

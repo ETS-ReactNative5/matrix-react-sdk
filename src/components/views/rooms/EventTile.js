@@ -488,7 +488,7 @@ module.exports = withMatrixClient(React.createClass({
 
     getReactions() {
         if (
-            !this.props.showReactions ||
+            // !this.props.showReactions ||
             !this.props.getRelationsForEvent ||
             !SettingsStore.isFeatureEnabled("feature_reactions")
         ) {
