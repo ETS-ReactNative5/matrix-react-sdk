@@ -100,13 +100,10 @@ export default class MessageActionBar extends React.PureComponent {
     }
 
     isReactionsEnabled() {
-        console.log('reactions ?', SettingsStore.isFeatureEnabled("feature_reactions"));
         return SettingsStore.isFeatureEnabled("feature_reactions");
     }
 
     isEditingEnabled() {
-        console.log('edit ?', SettingsStore.isFeatureEnabled("feature_message_editing"));
-
         return SettingsStore.isFeatureEnabled("feature_message_editing");
     }
 
