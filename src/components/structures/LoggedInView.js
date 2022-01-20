@@ -24,6 +24,7 @@ import { DragDropContext } from 'react-beautiful-dnd';
 import { KeyCode, isOnlyCtrlOrCmdKeyEvent } from '../../Keyboard';
 import PageTypes from '../../PageTypes';
 import CallMediaHandler from '../../CallMediaHandler';
+import { fixupColorFonts } from '../../utils/FontManager';
 import sdk from '../../index';
 import dis from '../../dispatcher';
 import sessionStore from '../../stores/SessionStore';
@@ -123,6 +124,8 @@ const LoggedInView = React.createClass({
         if (window.localStorage && !window.localStorage.getItem("tc_validate_encryption_informations")) {
             Modal.createTrackedDialog('', '', InfoEncryptionDialog);
         }
+
+        fixupColorFonts();
     },
 
     componentDidUpdate(prevProps) {
@@ -323,6 +326,18 @@ const LoggedInView = React.createClass({
                 if (ctrlCmdOnly) {
                     dis.dispatch({
                         action: 'focus_room_filter',
+                    });
+                    handled = true;
+                }
+                break;
+            case KeyCode.KEY_I:
+                // Ideally this would be CTRL+P for "Profile", but that's
+                // taken by the print dialog. CTRL+I for "Information"
+                // will have to do.
+
+                if (ctrlCmdOnly) {
+                    dis.dispatch({
+                        action: 'toggle_top_left_menu',
                     });
                     handled = true;
                 }

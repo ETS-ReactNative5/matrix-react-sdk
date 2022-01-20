@@ -22,6 +22,7 @@ import classNames from 'classnames';
 import sdk from '../../../index';
 import { _t } from '../../../languageHandler';
 import MatrixClientPeg from '../../../MatrixClientPeg';
+import Modal from "../../../Modal";
 import RateLimitedFunc from '../../../ratelimitedfunc';
 import { linkifyElement } from '../../../HtmlUtils';
 import AccessibleButton from '../elements/AccessibleButton';
@@ -151,12 +152,15 @@ module.exports = React.createClass({
 
     render: function() {
         const RoomAvatar = sdk.getComponent("avatars.RoomAvatar");
-        const EmojiText = sdk.getComponent('elements.EmojiText');
 
         let searchStatus = null;
         let cancelButton = null;
         let settingsButton = null;
         let pinnedEventsButton = null;
+
+        const e2eIcon = this.props.e2eStatus ?
+            <E2EIcon status={this.props.e2eStatus} /> :
+            undefined;
 
         if (this.props.onCancelClick) {
             cancelButton = <CancelButton onClick={this.props.onCancelClick} />;
@@ -191,10 +195,10 @@ module.exports = React.createClass({
             roomName = this.props.room.name;
         }
 
-        const emojiTextClasses = classNames('mx_RoomHeader_nametext', { mx_RoomHeader_settingsHint: settingsHint });
+        const textClasses = classNames('mx_RoomHeader_nametext', { mx_RoomHeader_settingsHint: settingsHint });
         const name =
-            <div className="mx_RoomHeader_name">
-                <EmojiText dir="auto" element="div" className={emojiTextClasses} title={roomName}>{ roomName }</EmojiText>
+            <div className="mx_RoomHeader_name" onClick={this.props.onSettingsClick}>
+                <div dir="auto" className={textClasses} title={roomName}>{ roomName }</div>
                 { searchStatus }
             </div>;
 
@@ -322,8 +326,8 @@ module.exports = React.createClass({
         return (
             <div className="mx_RoomHeader light-panel">
                 <div className="mx_RoomHeader_wrapper">
-                    <div className={mainAvatarClass}>{ roomAvatar }</div>
-                    {encryptedIndicator}
+                    <div className="mx_RoomHeader_avatar">{ roomAvatar }</div>
+                    { e2eIcon }
                     { name }
                     { topicElement }
                     { cancelButton }

@@ -2,6 +2,7 @@
 Copyright 2015, 2016 OpenMarket Ltd
 Copyright 2017 Vector Creations Ltd
 Copyright 2018, 2019 New Vector Ltd
+Copyright 2019 The Matrix.org Foundation C.I.C.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -168,9 +169,55 @@ module.exports = React.createClass({
         });
     },
 
+    _requestEmailToken: function(emailAddress, clientSecret, sendAttempt, sessionId) {
+        return this._matrixClient.requestRegisterEmailToken(
+            emailAddress,
+            clientSecret,
+            sendAttempt,
+            this.props.makeRegistrationUrl({
+                client_secret: clientSecret,
+                hs_url: this._matrixClient.getHomeserverUrl(),
+                is_url: this._matrixClient.getIdentityServerUrl(),
+                session_id: sessionId,
+            }),
+        );
+    },
+
     _onUIAuthFinished: async function(success, response, extra) {
         if (!success) {
-            const msg = response.message || response.toString();
+            let msg = response.message || response.toString();
+            // can we give a better error message?
+            if (response.errcode == 'M_RESOURCE_LIMIT_EXCEEDED') {
+                const errorTop = messageForResourceLimitError(
+                    response.data.limit_type,
+                    response.data.admin_contact, {
+                    'monthly_active_user': _td(
+                        "This homeserver has hit its Monthly Active User limit.",
+                    ),
+                    '': _td(
+                        "This homeserver has exceeded one of its resource limits.",
+                    ),
+                });
+                const errorDetail = messageForResourceLimitError(
+                    response.data.limit_type,
+                    response.data.admin_contact, {
+                    '': _td(
+                        "Please <a>contact your service administrator</a> to continue using this service.",
+                    ),
+                });
+                msg = <div>
+                    <p>{errorTop}</p>
+                    <p>{errorDetail}</p>
+                </div>;
+            } else if (response.required_stages && response.required_stages.indexOf('m.login.msisdn') > -1) {
+                let msisdnAvailable = false;
+                for (const flow of response.available_flows) {
+                    msisdnAvailable |= flow.stages.indexOf('m.login.msisdn') > -1;
+                }
+                if (!msisdnAvailable) {
+                    msg = _t('This server does not support authentication with a phone number.');
+                }
+            }
             this.setState({
                 busy: false,
                 doingUIAuth: false,
@@ -275,6 +322,21 @@ module.exports = React.createClass({
         });
     },
 
+    onServerDetailsNextPhaseClick(ev) {
+        ev.stopPropagation();
+        this.setState({
+            phase: PHASE_REGISTRATION,
+        });
+    },
+
+    onEditServerDetailsClick(ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        this.setState({
+            phase: PHASE_SERVER_DETAILS,
+        });
+    },
+
     _makeRegisterRequest: function(auth) {
         // Only send the bind params if we're sending username / pw params
         // (Since we need to send no params at all to use the ones saved in the
@@ -285,7 +347,7 @@ module.exports = React.createClass({
         } : {};
 
         return this._matrixClient.register(
-            undefined,
+            this.state.formVals.username,
             this.state.formVals.password,
             undefined, // session id: included in the auth dict already
             auth,
@@ -315,7 +377,7 @@ module.exports = React.createClass({
                 makeRequest={this._makeRegisterRequest}
                 onAuthFinished={this._onUIAuthFinished}
                 inputs={this._getUIAuthInputs()}
-                makeRegistrationUrl={this.props.makeRegistrationUrl}
+                requestEmailToken={this._requestEmailToken}
                 sessionId={this.props.sessionId}
                 clientSecret={this.props.clientSecret}
                 emailSid={this.props.idSid}

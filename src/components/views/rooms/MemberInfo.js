@@ -28,12 +28,14 @@ limitations under the License.
  */
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import dis from '../../../dispatcher';
 import Modal from '../../../Modal';
 import sdk from '../../../index';
 import { _t } from '../../../languageHandler';
-import {onStartChatFinished} from "../../../RoomInvite";
+import createRoom from '../../../createRoom';
 import DMRoomMap from '../../../utils/DMRoomMap';
+import Unread from '../../../Unread';
 import Tchap from '../../../Tchap';
 import { findReadReceiptFromUserId } from '../../../utils/Receipt';
 import withMatrixClient from '../../../wrappers/withMatrixClient';
@@ -530,20 +532,11 @@ module.exports = withMatrixClient(React.createClass({
         this._applyPowerChange(roomId, target, powerLevel, powerLevelEvent);
     },
 
-    _buildAddrObject: function() {
-        const addrObject = {};
-        const user = this.props.member.user;
-        addrObject.address = user ? user.userId : this.props.member.userId;
-        addrObject.avatarMxc = user ? user.avatarUrl : null;
-        addrObject.displayName = user ? user.displayName : this.props.member.rawDisplayName;
-        addrObject.addressType = "mx-user-id";
-        addrObject.isKnown = true;
-
-        return [addrObject];
-    },
-
     onNewDMClick: function() {
-        onStartChatFinished(true, this._buildAddrObject());
+        this.setState({ updating: this.state.updating + 1 });
+        createRoom({dmUserId: this.props.member.userId}).finally(() => {
+            this.setState({ updating: this.state.updating - 1 });
+        }).done();
     },
 
     onLeaveClick: function() {
@@ -598,6 +591,7 @@ module.exports = withMatrixClient(React.createClass({
 
         can.kick = me.powerLevel >= powerLevels.kick;
         can.ban = me.powerLevel >= powerLevels.ban;
+        can.invite = me.powerLevel >= powerLevels.invite;
         can.mute = me.powerLevel >= editPowerLevel;
         can.modifyLevel = me.powerLevel >= editPowerLevel && (isMe || me.powerLevel > them.powerLevel);
         can.modifyLevelMax = me.powerLevel;
@@ -682,6 +676,13 @@ module.exports = withMatrixClient(React.createClass({
         );
     },
 
+    onShareUserClick: function() {
+        const ShareDialog = sdk.getComponent("dialogs.ShareDialog");
+        Modal.createTrackedDialog('share room member dialog', '', ShareDialog, {
+            target: this.props.member,
+        });
+    },
+
     _renderUserOptions: function() {
         const cli = this.props.matrixClient;
         const member = this.props.member;
@@ -695,6 +696,7 @@ module.exports = withMatrixClient(React.createClass({
 
         let ignoreButton = null;
         let insertPillButton = null;
+        let inviteUserButton = null;
         let readReceiptButton = null;
         let sendMessage = null;
 
@@ -743,13 +745,19 @@ module.exports = withMatrixClient(React.createClass({
             }
 
             if (!isDirect && !(userExtern && otherUserExtern)) {
-                sendMessage = (
-                    <AccessibleButton onClick={this.onNewDMClick} className={"mx_MemberInfo_field"}>
-                        { _t('Send a message') }
+                inviteUserButton = (
+                    <AccessibleButton onClick={onInviteUserButton} className="mx_MemberInfo_field">
+                        { _t('Invite') }
                     </AccessibleButton>
                 );
             }
         }
+
+        const shareUserButton = (
+            <AccessibleButton onClick={this.onShareUserClick} className="mx_MemberInfo_field">
+                { _t('Share Link to User') }
+            </AccessibleButton>
+        );
 
         return (
             <div>
@@ -758,7 +766,7 @@ module.exports = withMatrixClient(React.createClass({
                     { readReceiptButton }
                     { insertPillButton }
                     { ignoreButton }
-                    { sendMessage }
+                    { inviteUserButton }
                 </div>
             </div>
         );
@@ -772,6 +780,7 @@ module.exports = withMatrixClient(React.createClass({
         let giveModButton;
         let spinner;
 
+        // FIXME
         const room = this.props.matrixClient.getRoom(this.props.member.roomId);
         const isNotice = Tchap.isRoomNotice(room);
 
@@ -911,7 +920,6 @@ module.exports = withMatrixClient(React.createClass({
         }
 
         const GeminiScrollbarWrapper = sdk.getComponent("elements.GeminiScrollbarWrapper");
-        const EmojiText = sdk.getComponent('elements.EmojiText');
 
         let backButton;
         if (this.props.member.roomId) {
@@ -926,7 +934,7 @@ module.exports = withMatrixClient(React.createClass({
                     <div className="mx_MemberInfo_name">
                         { backButton }
                         { e2eIconElement }
-                        <EmojiText element="h2">{ memberName }</EmojiText>
+                        <h2>{ memberName }</h2>
                     </div>
                     { avatarElement }
                     <div className="mx_MemberInfo_container">
@@ -940,6 +948,8 @@ module.exports = withMatrixClient(React.createClass({
                             { this._renderUserOptions() }
 
                             { adminTools }
+
+                            { startChat }
 
                             { this._renderDevices() }
 

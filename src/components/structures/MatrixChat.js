@@ -51,7 +51,6 @@ import SettingsStore, {SettingLevel} from "../../settings/SettingsStore";
 import { startAnyRegistrationFlow } from "../../Registration.js";
 import { messageForSyncError } from '../../utils/ErrorUtils';
 import ResizeNotifier from "../../utils/ResizeNotifier";
-import TimelineExplosionDialog from "../views/dialogs/TimelineExplosionDialog";
 
 const AutoDiscovery = Matrix.AutoDiscovery;
 
@@ -250,17 +249,6 @@ export default React.createClass({
 
     getDefaultIsUrl() {
         return this.state.defaultIsUrl || "https://vector.im";
-    },
-
-    /**
-     * Whether to skip the server details phase of registration and start at the
-     * actual form.
-     * @return {boolean}
-     *     If there was a configured default HS or default server name, skip the
-     *     the server details.
-     */
-    skipServerDetailsForRegistration() {
-        return !!this.state.defaultHsUrl;
     },
 
     componentWillMount: function() {
@@ -1321,17 +1309,6 @@ export default React.createClass({
             return self._loggedInView.child.canResetTimelineInRoom(roomId);
         });
 
-        cli.on('sync.unexpectedError', function(err) {
-            if (err.message && err.message.includes("live timeline ") && err.message.includes(" is no longer live ")) {
-                console.error("Caught timeline explosion - trying to ask user for more information");
-                if (Modal.hasDialogs()) {
-                    console.warn("User has another dialog open - skipping prompt");
-                    return;
-                }
-                Modal.createTrackedDialog('Timeline exploded', '', TimelineExplosionDialog, {});
-            }
-        });
-
         cli.on('sync', function(state, prevState, data) {
             // LifecycleStore and others cannot directly subscribe to matrix client for
             // events because flux only allows store state changes during flux dispatches.
@@ -1775,14 +1752,15 @@ export default React.createClass({
 
     // returns a promise which resolves to the new MatrixClient
     onRegistered: function(credentials) {
-        // XXX: This should be in state or ideally store(s) because we risk not
-        //      rendering the most up-to-date view of state otherwise.
-        this._is_registered = true;
         if (this.state.register_session_id) {
             // The user came in through an email validation link. To avoid overwriting
-            // their session, check to make sure the session isn't someone else.
+            // their session, check to make sure the session isn't someone else, and
+            // isn't a guest user since we'll usually have set a guest user session before
+            // starting the registration process. This isn't perfect since it's possible
+            // the user had a separate guest session they didn't actually mean to replace.
             const sessionOwner = Lifecycle.getStoredSessionOwner();
-            if (sessionOwner && sessionOwner !== credentials.userId) {
+            const sessionIsGuest = Lifecycle.getStoredSessionIsGuest();
+            if (sessionOwner && !sessionIsGuest && sessionOwner !== credentials.userId) {
                 console.log(
                     `Found a session for ${sessionOwner} but ${credentials.userId} is trying to verify their ` +
                     `email address. Restoring the session for ${sessionOwner} with warning.`,
@@ -1813,6 +1791,9 @@ export default React.createClass({
                 return MatrixClientPeg.get();
             }
         }
+        // XXX: This should be in state or ideally store(s) because we risk not
+        //      rendering the most up-to-date view of state otherwise.
+        this._is_registered = true;
         return Lifecycle.setLoggedIn(credentials);
     },
 
@@ -2030,7 +2011,6 @@ export default React.createClass({
                     defaultServerDiscoveryError={this.state.defaultServerDiscoveryError}
                     defaultHsUrl={this.getDefaultHsUrl()}
                     defaultIsUrl={this.getDefaultIsUrl()}
-                    skipServerDetails={this.skipServerDetailsForRegistration()}
                     brand={this.props.config.brand}
                     customHsUrl={this.getCurrentHsUrl()}
                     customIsUrl={this.getCurrentIsUrl()}

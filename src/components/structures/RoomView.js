@@ -40,7 +40,7 @@ import dis from '../../dispatcher';
 import Tinter from '../../Tinter';
 import rate_limited_func from '../../ratelimitedfunc';
 import ObjectUtils from '../../ObjectUtils';
-import {setDMRoom} from '../../Rooms';
+import * as Rooms from '../../Rooms';
 
 import { KeyCode, isOnlyCtrlOrCmdKeyEvent } from '../../Keyboard';
 
@@ -882,9 +882,12 @@ module.exports = React.createClass({
 
     _updateDMState() {
         const room = this.state.room;
+        if (room.getMyMembership() != "join") {
+            return;
+        }
         const dmInviter = room.getDMInviter();
         if (dmInviter) {
-            setDMRoom(room.roomId, dmInviter);
+            Rooms.setDMRoom(room.roomId, dmInviter);
         }
     },
 
@@ -1836,6 +1839,7 @@ module.exports = React.createClass({
                 membersLoaded={this.state.membersLoaded}
                 permalinkCreator={this._getPermalinkCreatorForRoom(this.state.room)}
                 resizeNotifier={this.props.resizeNotifier}
+                showReactions={true}
             />);
 
         let topUnreadMessagesBar = null;

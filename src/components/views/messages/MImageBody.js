@@ -23,6 +23,7 @@ import { MatrixClient } from 'matrix-js-sdk';
 import MFileBody from './MFileBody';
 import Modal from '../../../Modal';
 import sdk from '../../../index';
+import { decryptFile } from '../../../utils/DecryptFile';
 import ContentScanner from "../../../utils/ContentScanner";
 import Promise from 'bluebird';
 import { _t } from '../../../languageHandler';

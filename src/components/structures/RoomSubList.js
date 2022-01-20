@@ -30,6 +30,7 @@ import PropTypes from 'prop-types';
 import RoomTile from "../views/rooms/RoomTile";
 import LazyRenderList from "../views/elements/LazyRenderList";
 import Tchap from '../../Tchap';
+import {_t} from "../../languageHandler";
 
 // turn this on for drop & drag console debugging galore
 const debug = false;
@@ -43,6 +44,7 @@ const RoomSubList = React.createClass({
         list: PropTypes.arrayOf(PropTypes.object).isRequired,
         label: PropTypes.string.isRequired,
         tagName: PropTypes.string,
+        addRoomLabel: PropTypes.string,
 
         order: PropTypes.string.isRequired,
 
@@ -234,7 +236,11 @@ const RoomSubList = React.createClass({
         let addRoomButton;
         if (this.props.onAddRoom && !isUserExtern) {
             addRoomButton = (
-                <AccessibleButton onClick={ this.props.onAddRoom } className="mx_RoomSubList_addRoom" />
+                <AccessibleButton
+                    onClick={ this.props.onAddRoom }
+                    className="mx_RoomSubList_addRoom"
+                    title={this.props.addRoomLabel || _t("Add room")}
+                />
             );
         }
 
