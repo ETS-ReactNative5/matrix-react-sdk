@@ -384,7 +384,7 @@ module.exports = React.createClass({
                 { replyButton }
                 { externalURLButton }
                 { collapseReplyThread }
-                { e2eInfo }
+                {/*{ e2eInfo }*/}
             </div>
         );
     },
