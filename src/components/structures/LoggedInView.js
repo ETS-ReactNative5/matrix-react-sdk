@@ -121,6 +121,7 @@ const LoggedInView = React.createClass({
         this._matrixClient.on("accountData", this.onAccountData);
         this._matrixClient.on("sync", this.onSync);
         this._matrixClient.on("RoomState.events", this.onRoomStateEvents);
+        // :TCHAP: not sure why
         if (window.localStorage && !window.localStorage.getItem("tc_validate_encryption_informations")) {
             Modal.createTrackedDialog('', '', InfoEncryptionDialog);
         }

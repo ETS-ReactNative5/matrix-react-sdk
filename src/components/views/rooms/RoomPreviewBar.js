@@ -34,7 +34,7 @@ const MessageCase = Object.freeze({
     Rejecting: "Rejecting",
     Kicked: "Kicked",
     Banned: "Banned",
-    ExternNotInvited: "ExternNotInvited",
+    ExternNotInvited: "ExternNotInvited", // :TCHAP:
     OtherThreePIDError: "OtherThreePIDError",
     InvitedEmailMismatch: "InvitedEmailMismatch",
     Invite: "Invite",
@@ -95,6 +95,7 @@ module.exports = React.createClass({
         // so we can check them against the one that was invited
         if (this.props.inviterName && this.props.invitedEmail) {
             this.setState({busy: true});
+            // :TCHAP:
             Tchap.lookupThreePid(
                 'email', this.props.invitedEmail,
             ).finally(() => {
@@ -292,6 +293,7 @@ module.exports = React.createClass({
                 primaryActionHandler = this.props.onForgetClick;
                 break;
             }
+            // :TCHAP:
             case MessageCase.ExternNotInvited: {
                 title = _t("You are not allowed to join %(roomName)s", { roomName: _t("this room")});
                 subTitle = [_t("Try again later, or ask a room admin to check if you can have access.")];

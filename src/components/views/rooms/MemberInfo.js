@@ -686,6 +686,8 @@ module.exports = withMatrixClient(React.createClass({
     _renderUserOptions: function() {
         const cli = this.props.matrixClient;
         const member = this.props.member;
+
+        // :TCHAP: custom methods for handeling externals
         const dmRoomMap = new DMRoomMap(cli);
         const dmRooms = dmRoomMap.getDMRoomsForUserId(member.userId);
         const isDirect = dmRooms.includes(member.roomId);
@@ -780,6 +782,7 @@ module.exports = withMatrixClient(React.createClass({
         let giveModButton;
         let spinner;
 
+        // :TCHAP:
         // FIXME
         const room = this.props.matrixClient.getRoom(this.props.member.roomId);
         const isNotice = Tchap.isRoomNotice(room);
@@ -865,6 +868,7 @@ module.exports = withMatrixClient(React.createClass({
         const enablePresenceByHsUrl = SdkConfig.get()["enable_presence_by_hs_url"];
         const hsUrl = this.props.matrixClient.baseUrl;
         let showPresence = false;
+        // :TCHAP:
         // We dont want to use presence for the moment.
         /*if (enablePresenceByHsUrl && enablePresenceByHsUrl[hsUrl] !== undefined) {
             showPresence = enablePresenceByHsUrl[hsUrl];
@@ -913,6 +917,7 @@ module.exports = withMatrixClient(React.createClass({
         let avatarElement;
         if (avatarUrl) {
             const httpUrl = this.props.matrixClient.mxcUrlToHttp(avatarUrl, 800, 800);
+            // :TCHAP: antivirus
             const scImageUrl = ContentScanner.getUnencryptedContentUrl({url : Tchap.imgUrlToUri(httpUrl)}, true);
             avatarElement = <div className="mx_MemberInfo_avatar">
                 <img src={scImageUrl}  alt="Image"/>
@@ -940,6 +945,10 @@ module.exports = withMatrixClient(React.createClass({
                     <div className="mx_MemberInfo_container">
 
                         <div className="mx_MemberInfo_profile">
+                            // :TCHAP: hiding MID
+                            /*<div className="mx_MemberInfo_profileField">
+                                { this.props.member.userId }
+                            </div>*/
                             { roomMemberDetails }
                         </div>
                     </div>

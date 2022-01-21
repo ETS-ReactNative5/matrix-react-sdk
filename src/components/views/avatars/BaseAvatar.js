@@ -179,6 +179,7 @@ module.exports = React.createClass({
             }
         }
 
+        // :TCHAP: antivirus
         const scImageUrl = ContentScanner.getUnencryptedContentUrl({url : Tchap.imgUrlToUri(imageUrl)}, true);
         if (onClick != null) {
             return (

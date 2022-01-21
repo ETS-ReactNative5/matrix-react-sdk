@@ -190,6 +190,7 @@ export default class ImageView extends React.Component {
 
         const rotationDegrees = this.state.rotationDegrees;
         const effectiveStyle = {transform: `rotate(${rotationDegrees}deg)`, ...style};
+        // :TCHAP: antivirus
         let imgSrc = this.props.src;
         if (imgSrc && !imgSrc.startsWith("blob:")) {
             imgSrc = ContentScanner.getUnencryptedContentUrl({url : Tchap.imgUrlToUri(this.props.src)});

@@ -53,6 +53,7 @@ export default React.createClass({
         ev.preventDefault();
 
         const passphrase = this.refs.passphrase1.value;
+        // :TCHAP:
         if (passphrase.length < 8) {
             this.setState({errStr: _t('Passphrase must be at least 8 character long')});
             return false;

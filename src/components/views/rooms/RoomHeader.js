@@ -115,11 +115,11 @@ module.exports = React.createClass({
 
     onShareRoomClick: function(ev) {
         const ShareDialog = sdk.getComponent("dialogs.ShareDialog");
-        const accessRules = Tchap.getAccessRules(this.props.room.roomId);
-        const joinRules = Tchap.getJoinRules(this.props.room);
+        const accessRules = Tchap.getAccessRules(this.props.room.roomId); // :TCHAP:
+        const joinRules = Tchap.getJoinRules(this.props.room); // :TCHAP:
         Modal.createTrackedDialog('share room dialog', '', ShareDialog, {
             target: this.props.room,
-            isExtShared: accessRules === "unrestricted" && joinRules === "public" && !Tchap.isRoomForum(this.props.room),
+            isExtShared: accessRules === "unrestricted" && joinRules === "public" && !Tchap.isRoomForum(this.props.room), // :TCHAP:
         });
     },
 
@@ -220,6 +220,8 @@ module.exports = React.createClass({
                 oobData={this.props.oobData}
                 viewAvatarOnClick={true} />);
         }
+
+        // :TCHAP:
         const myMembership = this.props.room.getMyMembership();
         const dmRoomMap = new DMRoomMap(MatrixClientPeg.get());
         const isDMRoom = Boolean(dmRoomMap.getUserIdForRoomId(this.props.room.roomId));
@@ -267,7 +269,7 @@ module.exports = React.createClass({
         }
 
         let searchButton;
-        const encryptedState = this.props.room.currentState.getStateEvents("m.room.encryption").length > 0;
+        const encryptedState = this.props.room.currentState.getStateEvents("m.room.encryption").length > 0; // :TCHAP:
         if (this.props.onSearchClick && this.props.inRoom && !encryptedState) {
             searchButton =
                 <AccessibleButton className="mx_RoomHeader_button mx_RoomHeader_searchButton"
@@ -304,6 +306,7 @@ module.exports = React.createClass({
                 { searchButton }
             </div>;
 
+        // :TCHAP:
         let encryptedIndicator;
         if (!isNotice && !isDMRoom) {
             if (MatrixClientPeg.get().isRoomEncrypted(this.props.room.roomId)) {
@@ -313,6 +316,7 @@ module.exports = React.createClass({
             }
         }
 
+        // :TCHAP:
         let roomAccessibility;
         let mainAvatarClass = "mx_RoomHeader_avatar";
         if (!isDMRoom && !isNotice) {
@@ -326,6 +330,7 @@ module.exports = React.createClass({
             <div className="mx_RoomHeader light-panel">
                 <div className="mx_RoomHeader_wrapper">
                     <div className="mx_RoomHeader_avatar">{ roomAvatar }</div>
+                    // :TCHAP: hiding e2e status
                     {/*{ e2eIcon }*/}
                     { name }
                     { topicElement }

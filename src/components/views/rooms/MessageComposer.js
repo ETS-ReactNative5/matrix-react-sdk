@@ -24,6 +24,7 @@ import sdk from '../../../index';
 import dis from '../../../dispatcher';
 import RoomViewStore from '../../../stores/RoomViewStore';
 import SettingsStore, {SettingLevel} from "../../../settings/SettingsStore";
+import Stickerpicker from './Stickerpicker';
 import { makeRoomPermalink } from '../../../matrix-to';
 import ContentMessages from '../../../ContentMessages';
 import classNames from 'classnames';
@@ -393,6 +394,7 @@ export default class MessageComposer extends React.Component {
     render() {
         const controls = [
             this.state.me ? <ComposerAvatar key="controls_avatar" me={this.state.me} /> : null,
+            // :TCHAP: hiding e2e
             // this.props.e2eStatus ? <E2EIcon key="e2eIcon" status={this.props.e2eStatus} className="mx_MessageComposer_e2eIcon" /> : null,
         ];
 
@@ -416,6 +418,7 @@ export default class MessageComposer extends React.Component {
                 showFormattingButton ? <FormattingButton key="controls_formatting"
                     showFormatting={this.state.showFormatting} onClickHandler={this.onToggleFormattingClicked} /> : null,
                 <UploadButton key="controls_upload" roomId={this.props.room.roomId} />,
+                // :TCHAP:
                 // Disable VideoCall and Call for the moment.
 /*                callInProgress ? <HangupButton key="controls_hangup" roomId={this.props.room.roomId} /> : null,
                 callInProgress ? null : <CallButton key="controls_call" roomId={this.props.room.roomId} />,

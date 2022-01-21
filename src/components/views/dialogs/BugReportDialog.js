@@ -49,6 +49,7 @@ export default class BugReportDialog extends React.Component {
     }
 
     _onSubmit(ev) {
+        // :TCHAP: not sure if custom code or legacy
         let userText;
         if (this.state.text.length > 0) {
             userText = this.state.text + '\n\n';
@@ -97,6 +98,10 @@ export default class BugReportDialog extends React.Component {
 
     _onTextChange(ev) {
         this.setState({ text: ev.target.value });
+    }
+
+    _onIssueUrlChange(ev) {
+        this.setState({ issueUrl: ev.target.value });
     }
 
    _onSendLogsChange(ev) {

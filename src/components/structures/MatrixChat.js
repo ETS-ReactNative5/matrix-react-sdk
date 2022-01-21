@@ -968,6 +968,7 @@ export default React.createClass({
     _createRoom: function() {
         const CreateRoomDialog = sdk.getComponent('dialogs.CreateRoomDialog');
         Modal.createTrackedDialog('Create Room', '', CreateRoomDialog, {
+            // :TCHAP: more options, not sure about this
             onFinished: (shouldCreate, name, opts) => {
                 if (shouldCreate) {
                     const createOpts = {};
@@ -1046,6 +1047,7 @@ export default React.createClass({
         const warnings = [];
         if (joinRules) {
             const rule = joinRules.getContent().join_rule;
+            // :TCHAP: accessRules
             if (rule !== "public" && accessRules !== "direct") {
                 warnings.push((
                     <span className="warning" key="non_public_warning">
@@ -1316,6 +1318,7 @@ export default React.createClass({
             // would do this dispatch and expose the sync state itself (by listening to
             // its own dispatch).
 
+            // :TCHAP:
             if ((data && data.error && data.error.errcode === "ORG_MATRIX_EXPIRED_ACCOUNT") || self.state.expiredAccount) {
                 self.setState({
                     expiredAccount: true,
@@ -1357,9 +1360,7 @@ export default React.createClass({
                 return;
             }
             console.log("MatrixClient sync state => %s", state);
-            if (state !== "PREPARED") {
-                return;
-            }
+            if (state !== "PREPARED") { return; }
 
             self.firstSyncComplete = true;
             self.firstSyncPromise.resolve();

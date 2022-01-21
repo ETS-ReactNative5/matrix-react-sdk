@@ -40,6 +40,7 @@ export class TopLeftMenu extends React.Component {
         super();
         this.viewHomePage = this.viewHomePage.bind(this);
         this.openSettings = this.openSettings.bind(this);
+        // :TCHAP: fav feature
         this.openFavourite = this.openFavourite.bind(this);
         this.signIn = this.signIn.bind(this);
         this.signOut = this.signOut.bind(this);
@@ -122,6 +123,7 @@ export class TopLeftMenu extends React.Component {
         this.closeMenu();
     }
 
+    // :TCHAP: fav feature
     openFavourite() {
         dis.dispatch({action: 'view_user_favourite'});
         this.closeMenu();

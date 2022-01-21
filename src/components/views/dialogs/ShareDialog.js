@@ -23,6 +23,7 @@ import QRCode from 'qrcode-react';
 import {RoomPermalinkCreator, makeGroupPermalink, makeUserPermalink} from "../../../matrix-to";
 import * as ContextualMenu from "../../structures/ContextualMenu";
 
+// :TCHAP: all the social part was removed
 export default class ShareDialog extends React.Component {
     static propTypes = {
         onFinished: PropTypes.func.isRequired,

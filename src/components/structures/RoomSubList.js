@@ -200,6 +200,7 @@ const RoomSubList = React.createClass({
             {count: 0, highlight: true};
         const subListNotifCount = subListNotifications.count;
         const subListNotifHighlight = subListNotifications.highlight;
+        // :TCHAP:
         const isUserExtern = Tchap.isCurrentUserExtern();
 
         let badge;
@@ -234,6 +235,7 @@ const RoomSubList = React.createClass({
         }
 
         let addRoomButton;
+        // :TCHAP:
         if (this.props.onAddRoom && !isUserExtern) {
             addRoomButton = (
                 <AccessibleButton

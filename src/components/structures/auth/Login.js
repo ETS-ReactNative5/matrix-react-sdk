@@ -141,6 +141,7 @@ module.exports = React.createClass({
             loginIncorrect: false,
         });
 
+        // :TCHAP:
         Tchap.discoverPlatform(username).then(hs => {
             this.setState({
                 enteredHsUrl: hs,

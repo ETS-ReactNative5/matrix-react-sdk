@@ -50,6 +50,7 @@ module.exports = React.createClass({
         return {
             canRedact: false,
             canPin: false,
+            // :TCHAP: fav feature
             isFavourite: false,
         };
     },
@@ -57,6 +58,7 @@ module.exports = React.createClass({
     componentWillMount: function() {
         MatrixClientPeg.get().on('RoomMember.powerLevel', this._checkPermissions);
         this._checkPermissions();
+        // :TCHAP: fav feature
         this.setState({
             isFavourite: TchapFavouriteManager.isEventFavourite(this.props.mxEvent),
         })
@@ -196,6 +198,7 @@ module.exports = React.createClass({
         this.closeMenu();
     },
 
+    // :TCHAP: added
     onReplyClick: function() {
         dis.dispatch({
             action: 'reply_to_event',
@@ -204,6 +207,7 @@ module.exports = React.createClass({
         this.closeMenu();
     },
 
+    // :TCHAP: added
     onCollapseReplyThreadClick: function() {
         this.props.collapseReplyThread();
         this.closeMenu();
@@ -219,6 +223,7 @@ module.exports = React.createClass({
         this.closeMenu();
     },
 
+    // :TCHAP: fav feature
     onFavouriteClick: function() {
         if (this.state.isFavourite) {
             TchapFavouriteManager.removeFavorite(this.props.mxEvent)
@@ -360,6 +365,7 @@ module.exports = React.createClass({
                 </div>;
         }
 
+        // :TCHAP: fav feature
         let favouriteClasses = "mx_MessageContextMenu_field mx_MessageContextMenu_field_icon";
         favouriteClasses += this.state.isFavourite ? " mx_MessageContextMenu_field_favourite" : " mx_MessageContextMenu_field_favourite_out";
         const favouriteButton = (
@@ -368,6 +374,7 @@ module.exports = React.createClass({
             </div>
         );
 
+        // :TCHAP: more buttons, disabled e2e logo
         return (
             <div className="mx_MessageContextMenu">
                 { favouriteButton }

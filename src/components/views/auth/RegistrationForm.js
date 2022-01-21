@@ -36,6 +36,7 @@ const PASSWORD_MIN_SCORE = 3; // safely unguessable: moderate protection from of
 /**
  * A pure UI component which displays a registration form.
  */
+// :TCHAP: Heavy changes
 module.exports = React.createClass({
     displayName: 'RegistrationForm',
 
@@ -187,6 +188,7 @@ module.exports = React.createClass({
         return true;
     },
 
+    // :TCHAP: validation is reworked in latest code, not sure if we can blindly change this
     validateField: function(fieldID, eventType) {
         const pwd1 = this.state.password.trim();
         const pwd2 = this.state.passwordConfirm.trim();

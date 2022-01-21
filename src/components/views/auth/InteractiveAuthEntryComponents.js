@@ -420,6 +420,7 @@ export const MsisdnAuthEntry = React.createClass({
     },
 
     componentWillMount: function() {
+        // :TCHAP: heavy changes in the component
         Tchap.discoverPlatform(this.props.inputs.emailAddress).then(data => {
             let _matrixClient = Matrix.createClient({
                 baseUrl: data,

@@ -74,6 +74,7 @@ module.exports = React.createClass({
             phase: PHASE_SENDING_EMAIL,
         });
         this.reset = new PasswordReset(hsUrl, identityUrl);
+        // :TCHAP:
         let lowercaseEmail = email.toLowerCase();
         this.reset.resetPassword(lowercaseEmail, password).done(() => {
             this.setState({
@@ -117,7 +118,7 @@ module.exports = React.createClass({
         } else if (this.state.password !== this.state.password2) {
             this.showErrorDialog(_t('New passwords must match each other.'));
         } else {
-
+            // :TCHAP:
             Tchap.discoverPlatform(this.state.email).then(hs => {
                 TchapStrongPassword.validatePassword(hs, this.state.password).then(isValidPassword => {
                     if (!isValidPassword) {

@@ -103,6 +103,65 @@ module.exports = React.createClass({
         this._replaceClient();
     },
 
+    // :TCHAP: unused
+    /* onServerConfigChange: function(config) {
+        const newState = {};
+        if (config.hsUrl !== undefined) {
+            newState.hsUrl = config.hsUrl;
+        }
+        if (config.isUrl !== undefined) {
+            newState.isUrl = config.isUrl;
+        }
+        this.props.onServerConfigChange(config);
+        this.setState(newState, () => {
+            this._replaceClient();
+        });
+    },
+
+    getDefaultPhaseForServerType(type) {
+        switch (type) {
+            case ServerType.FREE: {
+                // Move directly to the registration phase since the server
+                // details are fixed.
+                return PHASE_REGISTRATION;
+            }
+            case ServerType.PREMIUM:
+            case ServerType.ADVANCED:
+                return PHASE_SERVER_DETAILS;
+        }
+    },
+
+    onServerTypeChange(type) {
+        this.setState({
+            serverType: type,
+        });
+
+        // When changing server types, set the HS / IS URLs to reasonable defaults for the
+        // the new type.
+        switch (type) {
+            case ServerType.FREE: {
+                const { hsUrl, isUrl } = ServerType.TYPES.FREE;
+                this.onServerConfigChange({
+                    hsUrl,
+                    isUrl,
+                });
+                break;
+            }
+            case ServerType.PREMIUM:
+            case ServerType.ADVANCED:
+                this.onServerConfigChange({
+                    hsUrl: this.props.defaultHsUrl,
+                    isUrl: this.props.defaultIsUrl,
+                });
+                break;
+        }
+
+        // Reset the phase to default phase for the server type.
+        this.setState({
+            phase: this.getDefaultPhaseForServerType(type),
+        });
+    },*/
+
     _replaceClient: async function() {
         this.setState({
             errorText: null,
@@ -134,6 +193,7 @@ module.exports = React.createClass({
     },
 
     onFormSubmit: function(formVals) {
+        // :TCHAP:
         Tchap.discoverPlatform(formVals.email)
             .then(hs => {
                 TchapStrongPassword.validatePassword(hs, formVals.password).then(isValidPassword => {
@@ -265,6 +325,7 @@ module.exports = React.createClass({
         });
     },
 
+    // :TCHAP: custom validation
     onFormValidationChange: function(fieldErrors) {
         // `fieldErrors` is an object mapping field IDs to error codes when there is an
         // error or `null` for no error, so the values array will be something like:
@@ -359,8 +420,77 @@ module.exports = React.createClass({
     _getUIAuthInputs: function() {
         return {
             emailAddress: this.state.formVals.email,
+            // :TCHAP: email login only
+            // phoneCountry: this.state.formVals.phoneCountry,
+            // phoneNumber: this.state.formVals.phoneNumber,
         };
     },
+
+    // :TCHAP: not using this
+    /* renderServerComponent() {
+        const ServerTypeSelector = sdk.getComponent("auth.ServerTypeSelector");
+        const ServerConfig = sdk.getComponent("auth.ServerConfig");
+        const ModularServerConfig = sdk.getComponent("auth.ModularServerConfig");
+        const AccessibleButton = sdk.getComponent("elements.AccessibleButton");
+
+        if (SdkConfig.get()['disable_custom_urls']) {
+            return null;
+        }
+
+        // If we're on a different phase, we only show the server type selector,
+        // which is always shown if we allow custom URLs at all.
+        if (PHASES_ENABLED && this.state.phase !== PHASE_SERVER_DETAILS) {
+            return <div>
+                <ServerTypeSelector
+                    selected={this.state.serverType}
+                    onChange={this.onServerTypeChange}
+                />
+            </div>;
+        }
+
+        let serverDetails = null;
+        switch (this.state.serverType) {
+            case ServerType.FREE:
+                break;
+            case ServerType.PREMIUM:
+                serverDetails = <ModularServerConfig
+                    customHsUrl={this.state.discoveredHsUrl || this.props.customHsUrl}
+                    defaultHsUrl={this.props.defaultHsUrl}
+                    defaultIsUrl={this.props.defaultIsUrl}
+                    onServerConfigChange={this.onServerConfigChange}
+                    delayTimeMs={250}
+                />;
+                break;
+            case ServerType.ADVANCED:
+                serverDetails = <ServerConfig
+                    customHsUrl={this.state.discoveredHsUrl || this.props.customHsUrl}
+                    customIsUrl={this.state.discoveredIsUrl || this.props.customIsUrl}
+                    defaultHsUrl={this.props.defaultHsUrl}
+                    defaultIsUrl={this.props.defaultIsUrl}
+                    onServerConfigChange={this.onServerConfigChange}
+                    delayTimeMs={250}
+                />;
+                break;
+        }
+
+        let nextButton = null;
+        if (PHASES_ENABLED) {
+            nextButton = <AccessibleButton className="mx_Login_submit"
+                onClick={this.onServerDetailsNextPhaseClick}
+            >
+                {_t("Next")}
+            </AccessibleButton>;
+        }
+
+        return <div>
+            <ServerTypeSelector
+                selected={this.state.serverType}
+                onChange={this.onServerTypeChange}
+            />
+            {serverDetails}
+            {nextButton}
+        </div>;
+    },*/
 
     renderRegisterComponent() {
         if (PHASES_ENABLED && this.state.phase !== PHASE_REGISTRATION) {
@@ -388,9 +518,31 @@ module.exports = React.createClass({
                 <Spinner />
             </div>;
         } else {
+            // :TCHAP: not using this
+            /* let onEditServerDetailsClick = null;
+            // If custom URLs are allowed and we haven't selected the Free server type, wire
+            // up the server details edit link.
+            if (
+                PHASES_ENABLED &&
+                !SdkConfig.get()['disable_custom_urls'] &&
+                this.state.serverType !== ServerType.FREE
+            ) {
+                onEditServerDetailsClick = this.onEditServerDetailsClick;
+            }
+
+            // If the current HS URL is the default HS URL, then we can label it
+            // with the default HS name (if it exists).
+            let hsName;
+            if (this.state.hsUrl === this.props.defaultHsUrl) {
+                hsName = this.props.defaultServerName;
+            } */
+
+            // :TCHAP: not using server things
             return <RegistrationForm
                 defaultUsername={this.state.formVals.username}
                 defaultEmail={this.state.formVals.email}
+                // defaultPhoneCountry={this.state.formVals.phoneCountry}
+                // defaultPhoneNumber={this.state.formVals.phoneNumber}
                 defaultPassword={this.state.formVals.password}
                 minPasswordLength={MIN_PASSWORD_LENGTH}
                 onValidationChange={this.onFormValidationChange}
@@ -432,6 +584,8 @@ module.exports = React.createClass({
                 <AuthBody>
                     <h2>{ _t('Create your account') }</h2>
                     { errorText }
+                    // :TCHAP: not using server things
+                    //{ this.renderServerComponent() }
                     { this.renderRegisterComponent() }
                     { goBack }
                     { signIn }

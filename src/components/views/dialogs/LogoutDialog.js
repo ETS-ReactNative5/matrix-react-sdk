@@ -79,6 +79,7 @@ export default class LogoutDialog extends React.Component {
     }
 
     _onFinished(confirmed) {
+        // :TCHAP:
         if (window.localStorage) {
             window.localStorage.removeItem("tc_validate_encryption_informations");
         }
@@ -114,7 +115,7 @@ export default class LogoutDialog extends React.Component {
     }
 
     render() {
-
+        // :TCHAP: don't know what happened here
 /*        if (!MatrixClientPeg.get().getKeyBackupEnabled()) {
             const BaseDialog = sdk.getComponent('views.dialogs.BaseDialog');
 

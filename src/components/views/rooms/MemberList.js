@@ -59,6 +59,7 @@ module.exports = React.createClass({
         const enablePresenceByHsUrl = SdkConfig.get()["enable_presence_by_hs_url"];
         const hsUrl = MatrixClientPeg.get().baseUrl;
         this._showPresence = false;
+        // :TCHAP:
         // We dont want to use presence for the moment.
         /*if (enablePresenceByHsUrl && enablePresenceByHsUrl[hsUrl] !== undefined) {
             this._showPresence = enablePresenceByHsUrl[hsUrl];

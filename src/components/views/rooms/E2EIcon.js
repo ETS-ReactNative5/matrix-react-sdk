@@ -18,6 +18,7 @@ import classNames from 'classnames';
 import { _t } from '../../../languageHandler';
 import AccessibleButton from '../elements/AccessibleButton';
 
+// :TCHAP: could be removed, I don't know what was the pb with default behavior
 export default function(props) {
     const isWarning = props.status === "warning";
     const isVerified = props.status === "verified";

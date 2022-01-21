@@ -29,6 +29,8 @@ import Promise from 'bluebird';
 import { _t } from '../../../languageHandler';
 import SettingsStore from "../../../settings/SettingsStore";
 
+
+// :TCHAP: lot of custom code due to using contentscanner, upstream doesn't encrypt images
 export default class MImageBody extends React.Component {
     static propTypes = {
         /* the MatrixEvent to show */

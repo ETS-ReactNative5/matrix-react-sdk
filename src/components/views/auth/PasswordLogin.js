@@ -24,6 +24,7 @@ import { _t } from '../../../languageHandler';
 /**
  * A pure UI component which displays a username/password form.
  */
+// :TCHAP: heavy change due to email-only login
 class PasswordLogin extends React.Component {
     static defaultProps = {
         onError: function() {},

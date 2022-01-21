@@ -117,6 +117,7 @@ const EntityTile = React.createClass({
         const entityTileNameClass = this.state.entityTileNameClass;
         if (this.props.className) mainClassNames[this.props.className] = true;
 
+        // :TCHAP:
         // For the moment, we always consider as "online" all members in order to disable "faded" effect on username
         const presenceClass = presenceClassForMember(
             "online", this.props.presenceLastActiveAgo, this.props.showPresence,
