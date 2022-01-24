@@ -91,8 +91,7 @@ module.exports = React.createClass({
         }
     },
 
-    // :TCHAP: was not present
-    /* _onClickLowPriority: function() {
+_onClickLowPriority: function() {
         // Tag room as 'Low Priority'
         if (!this.state.isLowPriority && this.state.isFavourite) {
             this.setState({
@@ -131,7 +130,7 @@ module.exports = React.createClass({
                 description: ((err && err.message) ? err.message : _t('Operation failed')),
             });
         });
-    },*/
+    },
 
     // :TCHAP: some warning for admin, not present in original code
     _onClickLeave: function() {
@@ -353,7 +352,7 @@ module.exports = React.createClass({
             'mx_RoomTileContextMenu_tag_fieldDisabled': false,
         });
 
-        /* const lowPriorityClasses = classNames({
+        const lowPriorityClasses = classNames({
             'mx_RoomTileContextMenu_tag_field': true,
             'mx_RoomTileContextMenu_tag_fieldSet': this.state.isLowPriority,
             'mx_RoomTileContextMenu_tag_fieldDisabled': false,
@@ -363,7 +362,7 @@ module.exports = React.createClass({
             'mx_RoomTileContextMenu_tag_field': true,
             'mx_RoomTileContextMenu_tag_fieldSet': this.state.isDirectMessage,
             'mx_RoomTileContextMenu_tag_fieldDisabled': false,
-        });*/
+        });
 
         return (
             <div>
@@ -372,16 +371,16 @@ module.exports = React.createClass({
                     <img className="mx_RoomTileContextMenu_tag_icon_set" src={require("../../../../res/img/icon_context_fave_on.svg")} width="15" height="15" />
                     { _t('Favourite') }
                 </div>
-                /*<div className={lowPriorityClasses} onClick={this._onClickLowPriority} >
-                    <img className="mx_RoomTileContextMenu_tag_icon" src={require("../../../../res/img/icon_context_low.svg")} width="15" height="15" />
-                    <img className="mx_RoomTileContextMenu_tag_icon_set" src={require("../../../../res/img/icon_context_low_on.svg")} width="15" height="15" />
-                    { _t('Low Priority') }
-                </div>
+                {/*<div className={lowPriorityClasses} onClick={this._onClickLowPriority} >*/}
+                {/*    <img className="mx_RoomTileContextMenu_tag_icon" src={require("../../../../res/img/icon_context_low.svg")} width="15" height="15" />*/}
+                {/*    <img className="mx_RoomTileContextMenu_tag_icon_set" src={require("../../../../res/img/icon_context_low_on.svg")} width="15" height="15" />*/}
+                {/*    { _t('Low Priority') }*/}
+                {/*</div>*/}
                 <div className={dmClasses} onClick={this._onClickDM} >
                     <img className="mx_RoomTileContextMenu_tag_icon" src={require("../../../../res/img/icon_context_person.svg")} width="15" height="15" />
                     <img className="mx_RoomTileContextMenu_tag_icon_set" src={require("../../../../res/img/icon_context_person_on.svg")} width="15" height="15" />
                     { _t('Direct Chat') }
-                </div>*/
+                </div>
             </div>
         );
     },
@@ -393,9 +392,9 @@ module.exports = React.createClass({
         if (myMembership !== 'join') {
             return <div>
                 { this._renderLeaveMenu(myMembership) }
-/               / :TCHAP:
-                // <hr className="mx_RoomTileContextMenu_separator" />
-                // { this._renderSettingsMenu() }
+                {/*:TCHAP:*/}
+                {/*<hr className="mx_RoomTileContextMenu_separator" />*/}
+                {/*{ this._renderSettingsMenu() }*/}
             </div>;
         }
 
@@ -406,9 +405,9 @@ module.exports = React.createClass({
                 { this._renderLeaveMenu(myMembership) }
                 <hr className="mx_RoomTileContextMenu_separator" />
                 { this._renderRoomTagMenu() }
-                // :TCHAP:
-                // <hr className="mx_RoomTileContextMenu_separator" />
-                // { this._renderSettingsMenu() }
+                {/* :TCHAP:*/}
+                {/* <hr className="mx_RoomTileContextMenu_separator" />*/}
+                {/* { this._renderSettingsMenu() }*/}
             </div>
         );
     },

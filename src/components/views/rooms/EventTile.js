@@ -753,7 +753,7 @@ module.exports = withMatrixClient(React.createClass({
                             <a href={permalink} onClick={this.onPermalinkClicked}>
                                 { timestamp }
                             </a>
-                            // :TCHAP: no e2e display
+                            {/* :TCHAP: no e2e display*/}
                             {/*{ this._renderE2EPadlock() }*/}
                             { thread }
                             <EventTileType ref="tile"
@@ -783,7 +783,7 @@ module.exports = withMatrixClient(React.createClass({
                             <a href={permalink} onClick={this.onPermalinkClicked}>
                                 { timestamp }
                             </a>
-                            // :TCHAP: no e2e display
+                            {/* :TCHAP: no e2e display*/}
                             {/*{ this._renderE2EPadlock() }*/}
                             { thread }
                             <EventTileType ref="tile"

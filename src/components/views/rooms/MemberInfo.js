@@ -747,6 +747,24 @@ module.exports = withMatrixClient(React.createClass({
             }
 
             if (!isDirect && !(userExtern && otherUserExtern)) {
+                const roomId = member && member.roomId ? member.roomId : RoomViewStore.getRoomId();
+                const onInviteUserButton = async () => {
+                    try {
+                        // We use a MultiInviter to re-use the invite logic, even though
+                        // we're only inviting one user.
+                        const inviter = new MultiInviter(roomId);
+                        await inviter.invite([member.userId]).then(() => {
+                            if (inviter.getCompletionState(member.userId) !== "invited")
+                                throw new Error(inviter.getErrorText(member.userId));
+                        });
+                    } catch (err) {
+                        const ErrorDialog = sdk.getComponent('dialogs.ErrorDialog');
+                        Modal.createTrackedDialog('Failed to invite', '', ErrorDialog, {
+                            title: _t('Failed to invite'),
+                            description: ((err && err.message) ? err.message : _t("Operation failed")),
+                        });
+                    }
+                };
                 inviteUserButton = (
                     <AccessibleButton onClick={onInviteUserButton} className="mx_MemberInfo_field">
                         { _t('Invite') }
