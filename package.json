@@ -34,6 +34,9 @@
     "matrix-gen-i18n": "scripts/gen-i18n.js",
     "matrix-prune-i18n": "scripts/prune-i18n.js"
   },
+  "scriptsComments": {
+    "start:init": "Run babel on files, and output the result in /lib. The parent package uses it."
+  },
   "scripts": {
     "reskindex": "node scripts/reskindex.js -h header",
     "reskindex:watch": "node scripts/reskindex.js -h header -w",
