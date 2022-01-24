@@ -99,14 +99,20 @@ export class TopLeftMenu extends React.Component {
             {_t("Settings")}
         </li>;
 
+        const favoritesItem = <ul className="mx_TopLeftMenu_section_withIcon">
+            <li className="mx_TopLeftMenu_icon_favourite" onClick={this.openFavourite}>{_t("Favourite")}</li>
+        </ul>;
+
         return <div className="mx_TopLeftMenu mx_HiddenFocusable" tabIndex={0} ref={this.props.containerRef}>
+            {/* :TCHAP: hide MID */}
             <div className="mx_TopLeftMenu_section_noIcon" aria-readonly={true}>
                 <div>{this.props.displayName}</div>
-                <div className="mx_TopLeftMenu_greyedText" aria-hidden={true}>{this.props.userId}</div>
+                {/*<div className="mx_TopLeftMenu_greyedText" aria-hidden={true}>{this.props.userId}</div>*/}
                 {hostingSignup}
             </div>
             <ul className="mx_TopLeftMenu_section_withIcon">
                 {homePageItem}
+                {favoritesItem}
                 {settingsItem}
                 {signInOutItem}
             </ul>

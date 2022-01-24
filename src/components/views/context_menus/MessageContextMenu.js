@@ -374,17 +374,17 @@ module.exports = React.createClass({
             </div>
         );
 
-        // :TCHAP: more buttons, disabled e2e logo
+        // :TCHAP: more buttons, disabled e2e logo, sharing, source
         return (
             <div className="mx_MessageContextMenu">
                 { favouriteButton }
                 { resendButton }
                 { redactButton }
                 { cancelButton }
-                { forwardButton }
+                {/*{ forwardButton }*/}
                 { pinButton }
-                { viewSourceButton }
-                { viewClearSourceButton }
+                {/*{ viewSourceButton }*/}
+                {/*{ viewClearSourceButton }*/}
                 { unhidePreviewButton }
                 { permalinkButton }
                 { quoteButton }

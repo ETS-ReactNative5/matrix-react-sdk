@@ -945,10 +945,10 @@ module.exports = withMatrixClient(React.createClass({
                     <div className="mx_MemberInfo_container">
 
                         <div className="mx_MemberInfo_profile">
-                            // :TCHAP: hiding MID
-                            /*<div className="mx_MemberInfo_profileField">
-                                { this.props.member.userId }
-                            </div>*/
+                            {/* :TCHAP: hiding MID*/}
+                            {/*<div className="mx_MemberInfo_profileField">*/}
+                            {/*    { this.props.member.userId }*/}
+                            {/*</div>*/}
                             { roomMemberDetails }
                         </div>
                     </div>
