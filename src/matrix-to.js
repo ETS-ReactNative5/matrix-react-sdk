@@ -17,9 +17,7 @@ limitations under the License.
 import MatrixClientPeg from "./MatrixClientPeg";
 import isIp from "is-ip";
 import utils from 'matrix-js-sdk/lib/utils';
-
-export const host = "matrix.to";
-export const baseUrl = `https://${host}`;
+import SdkConfig from './SdkConfig';
 
 // The maximum number of servers to pick when working out which servers
 // to add to permalinks. The servers are appended as ?via=example.org
@@ -82,6 +80,7 @@ export class RoomPermalinkCreator {
         this._allowedHostsRegexps = null;
         this._serverCandidates = null;
         this._started = false;
+        this.base_host_url = SdkConfig.get().base_host_url;
 
         if (!this._roomId) {
             throw new Error("Failed to resolve a roomId for the permalink creator to use");
@@ -123,16 +122,24 @@ export class RoomPermalinkCreator {
         return this._started;
     }
 
+    // :TCHAP: modified for simpler urls maybe?
     forEvent(eventId) {
-        const roomId = this._roomId;
-        const permalinkBase = `${baseUrl}/#/${roomId}/${eventId}`;
-        return `${permalinkBase}${encodeServerCandidates(this._serverCandidates)}`;
+        // const roomId = this._roomId;
+        // const permalinkBase = `${this.base_host_url}/#/${roomId}/${eventId}`;
+        // return `${permalinkBase}${encodeServerCandidates(this._serverCandidates)}`;
+        const identifier = this._room.getCanonicalAlias() ? this._room.getCanonicalAlias() : this._room.roomId;
+        const permalinkBase = `${this.base_host_url}/#/room/${identifier}/${eventId}`;
+        return permalinkBase;
     }
 
+    // :TCHAP: modified for simpler urls maybe?
     forRoom() {
-        const roomId = this._roomId;
-        const permalinkBase = `${baseUrl}/#/${roomId}`;
-        return `${permalinkBase}${encodeServerCandidates(this._serverCandidates)}`;
+        // const roomId = this._roomId;
+        // const permalinkBase = `${this.base_host_url}/#/${roomId}`;
+        // return `${permalinkBase}${encodeServerCandidates(this._serverCandidates)}`;
+        const identifier = this._room.getCanonicalAlias() ? this._room.getCanonicalAlias() : this._room.roomId;
+        const permalinkBase = `${this.base_host_url}/#/room/${identifier}`;
+        return permalinkBase;
     }
 
     onRoomState(event) {
@@ -255,10 +262,12 @@ export class RoomPermalinkCreator {
 }
 
 export function makeUserPermalink(userId) {
+    const baseUrl = SdkConfig.get().base_host_url;
     return `${baseUrl}/#/${userId}`;
 }
 
 export function makeRoomPermalink(roomId) {
+    const baseUrl = SdkConfig.get().base_host_url;
     const permalinkBase = `${baseUrl}/#/${roomId}`;
 
     if (!roomId) {
@@ -280,6 +289,7 @@ export function makeRoomPermalink(roomId) {
 }
 
 export function makeGroupPermalink(groupId) {
+    const baseUrl = SdkConfig.get().base_host_url;
     return `${baseUrl}/#/${groupId}`;
 }
 

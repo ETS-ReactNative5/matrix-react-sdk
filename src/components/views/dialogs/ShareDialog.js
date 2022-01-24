@@ -163,7 +163,6 @@ export default class ShareDialog extends React.Component {
                 matrixToUrl = this.props.permalinkCreator.forRoom();
             }
         }
-
         const encodedUrl = encodeURIComponent(matrixToUrl);
 
         let warningSharingExtUI;
@@ -175,7 +174,6 @@ export default class ShareDialog extends React.Component {
                 </div>
             );
         }
-
 
         const BaseDialog = sdk.getComponent('views.dialogs.BaseDialog');
         return <BaseDialog title={title}
