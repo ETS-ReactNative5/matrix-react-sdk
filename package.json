@@ -34,6 +34,10 @@
     "matrix-gen-i18n": "scripts/gen-i18n.js",
     "matrix-prune-i18n": "scripts/prune-i18n.js"
   },
+  "scriptsComments": {
+    "start:init": "Run babel on files, and output the result in /lib. The parent package uses it.",
+    "prepare": "runs after install and during npm pack/publish. See https://docs.npmjs.com/cli/v8/using-npm/scripts#life-cycle-operation-order"
+  },
   "scripts": {
     "reskindex": "node scripts/reskindex.js -h header",
     "reskindex:watch": "node scripts/reskindex.js -h header -w",
@@ -80,7 +84,7 @@
     "linkifyjs": "^2.1.6",
     "lodash": "^4.17.15",
     "lolex": "2.3.2",
-    "matrix-js-sdk": "2.2.0",
+    "matrix-js-sdk": "github:tchapgouv/matrix-js-sdk#DINSIC_develop",
     "optimist": "^0.6.1",
     "pako": "^1.0.5",
     "png-chunks-extract": "^1.0.0",
