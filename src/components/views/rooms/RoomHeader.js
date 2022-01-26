@@ -330,7 +330,7 @@ module.exports = React.createClass({
             <div className="mx_RoomHeader light-panel">
                 <div className="mx_RoomHeader_wrapper">
                     <div className="mx_RoomHeader_avatar">{ roomAvatar }</div>
-                    // :TCHAP: hiding e2e status
+                    {/*:TCHAP: hiding e2e status*/}
                     {/*{ e2eIcon }*/}
                     { name }
                     { topicElement }

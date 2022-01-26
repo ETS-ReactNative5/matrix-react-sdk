@@ -584,8 +584,8 @@ module.exports = React.createClass({
                 <AuthBody>
                     <h2>{ _t('Create your account') }</h2>
                     { errorText }
-                    // :TCHAP: not using server things
-                    //{ this.renderServerComponent() }
+                    {/*:TCHAP: not using server things*/}
+                    {/*{ this.renderServerComponent() }*/}
                     { this.renderRegisterComponent() }
                     { goBack }
                     { signIn }

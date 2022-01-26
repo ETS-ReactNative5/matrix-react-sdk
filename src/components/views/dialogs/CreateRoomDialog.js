@@ -53,7 +53,7 @@ export default React.createClass({
     },
 
     onOk: function() {
-        // :TCHAP: 
+        // :TCHAP:
         if (this.refs.textinput.value.trim().length < 1) {
             this.setState({
                 errorText: _t("Room name is required"),

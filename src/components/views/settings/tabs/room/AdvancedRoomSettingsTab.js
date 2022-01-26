@@ -149,13 +149,13 @@ export default class AdvancedRoomSettingsTab extends React.Component {
                     {oldRoomLink}
                     {roomUpgradeButton}
                 </div>
-                // :TCHAP: hide dev tools ?
-                /*<div className='mx_SettingsTab_section mx_SettingsTab_subsectionText'>
-                    <span className='mx_SettingsTab_subheading'>{_t("Developer options")}</span>
-                    <AccessibleButton onClick={this._openDevtools} kind='primary'>
-                        {_t("Open Devtools")}
-                    </AccessibleButton>
-                </div>*/
+                {/*:TCHAP: hide dev tools ?*/}
+                {/*<div className='mx_SettingsTab_section mx_SettingsTab_subsectionText'>*/}
+                {/*    <span className='mx_SettingsTab_subheading'>{_t("Developer options")}</span>*/}
+                {/*    <AccessibleButton onClick={this._openDevtools} kind='primary'>*/}
+                {/*        {_t("Open Devtools")}*/}
+                {/*    </AccessibleButton>*/}
+                {/*</div>*/}
             </div>
         );
     }
