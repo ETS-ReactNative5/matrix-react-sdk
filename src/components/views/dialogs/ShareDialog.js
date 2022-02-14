@@ -23,6 +23,7 @@ import QRCode from 'qrcode-react';
 import {RoomPermalinkCreator, makeGroupPermalink, makeUserPermalink} from "../../../matrix-to";
 import * as ContextualMenu from "../../structures/ContextualMenu";
 
+// :TCHAP: all the social part was removed
 export default class ShareDialog extends React.Component {
     static propTypes = {
         onFinished: PropTypes.func.isRequired,
@@ -87,7 +88,8 @@ export default class ShareDialog extends React.Component {
             top: y,
             message: successful ? _t('Copied!') : _t('Failed to copy'),
         }, false);
-        e.target.onmouseleave = close;
+        // Drop a reference to this close handler for componentWillUnmount
+        this.closeCopiedTooltip = e.target.onmouseleave = close;
     }
 
     onLinkSpecificEventCheckboxClick() {
@@ -102,6 +104,12 @@ export default class ShareDialog extends React.Component {
             permalinkCreator.load();
             this.setState({permalinkCreator});
         }
+    }
+
+    componentWillUnmount() {
+        // if the Copied tooltip is open then get rid of it, there are ways to close the modal which wouldn't close
+        // the tooltip otherwise, such as pressing Escape or clicking X really quickly
+        if (this.closeCopiedTooltip) this.closeCopiedTooltip();
     }
 
     render() {
@@ -155,7 +163,6 @@ export default class ShareDialog extends React.Component {
                 matrixToUrl = this.props.permalinkCreator.forRoom();
             }
         }
-
         const encodedUrl = encodeURIComponent(matrixToUrl);
 
         let warningSharingExtUI;
@@ -167,7 +174,6 @@ export default class ShareDialog extends React.Component {
                 </div>
             );
         }
-
 
         const BaseDialog = sdk.getComponent('views.dialogs.BaseDialog');
         return <BaseDialog title={title}

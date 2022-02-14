@@ -160,6 +160,7 @@ export default class DeviceVerifyDialog extends React.Component {
 
     _renderSasVerificationPhaseStart() {
         this._onSasRequestClick();
+        // :TCHAP: this part was commented in code, but active upstream
         // This will automatically render the next phase well configured.
         // The code is kept if one day we wanted to revert this.
         /*const AccessibleButton = sdk.getComponent('views.elements.AccessibleButton');

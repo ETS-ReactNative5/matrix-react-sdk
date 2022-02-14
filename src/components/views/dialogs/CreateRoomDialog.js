@@ -29,6 +29,7 @@ export default React.createClass({
         onFinished: PropTypes.func.isRequired,
     },
 
+    // :TCHAP:
     getInitialState: function() {
         const domain = Tchap.getShortDomain();
         return {
@@ -52,6 +53,7 @@ export default React.createClass({
     },
 
     onOk: function() {
+        // :TCHAP:
         if (this.refs.textinput.value.trim().length < 1) {
             this.setState({
                 errorText: _t("Room name is required"),
@@ -71,24 +73,28 @@ export default React.createClass({
         this.props.onFinished(false);
     },
 
+    // :TCHAP:
     _onFederateSwitchChange: function(ev) {
         this.setState({
             federate: !ev
         });
     },
 
+    // :TCHAP:
     _onExternAllowedSwitchChange: function(ev) {
         this.setState({
             externAllowed: ev
         });
     },
 
+    // :TCHAP:
     onRoomOptionChange: function(ev) {
         ev.preventDefault();
         const selected = ev.target.getAttribute("aria-label")
         this.setUpRoomOptions(selected);
     },
 
+    // :TCHAP:
     setUpRoomOptions: function(selected) {
         switch (selected) {
             case "private": {
@@ -136,6 +142,7 @@ export default React.createClass({
         }
     },
 
+    // :TCHAP: moderates changes in template
     render: function() {
         const BaseDialog = sdk.getComponent('views.dialogs.BaseDialog');
         const DialogButtons = sdk.getComponent('views.elements.DialogButtons');

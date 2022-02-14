@@ -142,6 +142,7 @@ module.exports = React.createClass({
         this._populateRoomList();
     },
 
+    // :TCHAP: addings homeservers to get the rooms, maybe need refactoring
     _populateRoomList: function() {
         const homeserverList = this.state.serverList;
         for (let i = 0; i < homeserverList.length; i++) {
@@ -319,6 +320,49 @@ module.exports = React.createClass({
         dis.dispatch({action: 'view_create_room'});
     },
 
+    // :TCHAP: was deleted, not sure why
+    /* onJoinClick: function(alias) {
+        // If we don't have a particular instance id selected, just show that rooms alias
+        if (!this.state.instanceId) {
+            // If the user specified an alias without a domain, add on whichever server is selected
+            // in the dropdown
+            if (alias.indexOf(':') == -1) {
+                alias = alias + ':' + this.state.roomServer;
+            }
+            this.showRoomAlias(alias);
+        } else {
+            // This is a 3rd party protocol. Let's see if we can join it
+            const protocolName = protocolNameForInstanceId(this.protocols, this.state.instanceId);
+            const instance = instanceForInstanceId(this.protocols, this.state.instanceId);
+            const fields = protocolName ? this._getFieldsForThirdPartyLocation(alias, this.protocols[protocolName], instance) : null;
+            if (!fields) {
+                const ErrorDialog = sdk.getComponent("dialogs.ErrorDialog");
+                Modal.createTrackedDialog('Unable to join network', '', ErrorDialog, {
+                    title: _t('Unable to join network'),
+                    description: _t('Riot does not know how to join a room on this network'),
+                });
+                return;
+            }
+            MatrixClientPeg.get().getThirdpartyLocation(protocolName, fields).done((resp) => {
+                if (resp.length > 0 && resp[0].alias) {
+                    this.showRoomAlias(resp[0].alias);
+                } else {
+                    const ErrorDialog = sdk.getComponent("dialogs.ErrorDialog");
+                    Modal.createTrackedDialog('Room not found', '', ErrorDialog, {
+                        title: _t('Room not found'),
+                        description: _t('Couldn\'t find a matching Matrix room'),
+                    });
+                }
+            }, (e) => {
+                const ErrorDialog = sdk.getComponent("dialogs.ErrorDialog");
+                Modal.createTrackedDialog('Fetching third party location failed', '', ErrorDialog, {
+                    title: _t('Fetching third party location failed'),
+                    description: _t('Unable to look up room ID from server'),
+                });
+            });
+        }
+    },*/
+
     showRoomAlias: function(alias) {
         this.showRoom(null, alias);
     },
@@ -368,18 +412,39 @@ module.exports = React.createClass({
         const rooms = this.state.publicRooms;
         const rows = [];
         const self = this;
-
+        // :TCHAP: room sorting ?
         rooms.sort((a, b) => {
             return b.num_joined_members - a.num_joined_members;
         });
 
+        let guestRead; let guestJoin; let perms;
         for (let i = 0; i < rooms.length; i++) {
+            // :TCHAP: no guests
+            /* guestRead = null;
+            guestJoin = null;
+
+            if (rooms[i].world_readable) {
+                guestRead = (
+                    <div className="mx_RoomDirectory_perm">{ _t('World readable') }</div>
+                );
+            }
+            if (rooms[i].guest_can_join) {
+                guestJoin = (
+                    <div className="mx_RoomDirectory_perm">{ _t('Guests can join') }</div>
+                );
+            }
+
+            perms = null;
+            if (guestRead || guestJoin) {
+                perms = <div className="mx_RoomDirectory_perms">{guestRead}{guestJoin}</div>;
+            } */
 
             let name = rooms[i].name || get_display_alias_for_room(rooms[i]) || _t('Unnamed room');
             if (name.length > MAX_NAME_LENGTH) {
                 name = `${name.substring(0, MAX_NAME_LENGTH)}...`;
             }
 
+            // :TCHAP: could use get_display_alias_for_room ?
             const domain = Tchap.getDomainFromId(rooms[i].room_id);
 
             let topic = rooms[i].topic || '';
@@ -495,6 +560,7 @@ module.exports = React.createClass({
 
         let listHeader;
         if (!this.state.protocolsLoading) {
+            const NetworkDropdown = sdk.getComponent('directory.NetworkDropdown');
             const DirectorySearchBox = sdk.getComponent('elements.DirectorySearchBox');
 
             const protocolName = protocolNameForInstanceId(this.protocols, this.state.instanceId);
@@ -512,6 +578,11 @@ module.exports = React.createClass({
 
 
             let placeholder = _t('Search for a room');
+            if (!this.state.instanceId) {
+                placeholder = _t('Search for a room like #example') + ':' + this.state.roomServer;
+            } else if (instance_expected_field_type) {
+                placeholder = instance_expected_field_type.placeholder;
+            }
 
             let showJoinButton = this._stringLooksLikeId(this.state.filterString, instance_expected_field_type);
             if (protocolName) {

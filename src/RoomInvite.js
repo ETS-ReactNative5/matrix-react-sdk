@@ -19,12 +19,12 @@ import React from 'react';
 import MatrixClientPeg from './MatrixClientPeg';
 import MultiInviter from './utils/MultiInviter';
 import Modal from './Modal';
-import {getAddressType} from './UserAddress';
+import { getAddressType } from './UserAddress';
 import createRoom from './createRoom';
 import sdk from './';
 import dis from './dispatcher';
 import DMRoomMap from './utils/DMRoomMap';
-import {_t} from './languageHandler';
+import { _t } from './languageHandler';
 import Tchap from './Tchap';
 
 /**

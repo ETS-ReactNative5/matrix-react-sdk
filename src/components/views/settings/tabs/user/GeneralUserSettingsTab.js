@@ -91,6 +91,7 @@ export default class GeneralUserSettingsTab extends React.Component {
         });
     };
 
+    // :TCHAP: redlist feature
     _onRedlistOptionChange = async () => {
         try {
             const redlistChecked = this.state.redList;

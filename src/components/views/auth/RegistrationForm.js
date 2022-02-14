@@ -1,7 +1,7 @@
 /*
 Copyright 2015, 2016 OpenMarket Ltd
 Copyright 2017 Vector Creations Ltd
-Copyright 2018 New Vector Ltd
+Copyright 2018, 2019 New Vector Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -23,14 +23,20 @@ import Email from '../../../email';
 import Modal from '../../../Modal';
 import { _t } from '../../../languageHandler';
 import Tchap from "../../../Tchap";
+import SdkConfig from '../../../SdkConfig';
+import { SAFE_LOCALPART_REGEX } from '../../../Registration';
+import withValidation from '../elements/Validation';
 
 const FIELD_EMAIL = 'field_email';
 const FIELD_PASSWORD = 'field_password';
 const FIELD_PASSWORD_CONFIRM = 'field_password_confirm';
 
+const PASSWORD_MIN_SCORE = 3; // safely unguessable: moderate protection from offline slow-hash scenario.
+
 /**
  * A pure UI component which displays a registration form.
  */
+// :TCHAP: Heavy changes
 module.exports = React.createClass({
     displayName: 'RegistrationForm',
 
@@ -53,7 +59,6 @@ module.exports = React.createClass({
 
     getDefaultProps: function() {
         return {
-            minPasswordLength: 6,
             onValidationChange: console.error,
         };
     },
@@ -66,43 +71,39 @@ module.exports = React.createClass({
             email: "",
             password: "",
             passwordConfirm: "",
-            isExtern: false
+            isExtern: false,
+            passwordComplexity: null,
+            passwordSafe: false,
         };
     },
 
-    onSubmit: function(ev) {
+    onSubmit: async function(ev) {
         ev.preventDefault();
 
-        // validate everything, in reverse order so
-        // the error that ends up being displayed
-        // is the one from the first invalid field.
-        // It's not super ideal that this just calls
-        // onValidationChange once for each invalid field.
-        this.validateField(FIELD_EMAIL, ev.type);
-        this.validateField(FIELD_PASSWORD_CONFIRM, ev.type);
-        this.validateField(FIELD_PASSWORD, ev.type);
+        const allFieldsValid = await this.verifyFieldsBeforeSubmit();
+        if (!allFieldsValid) {
+            return;
+        }
 
         const self = this;
-        if (this.allFieldsValid()) {
-            if (this.state.email == '') {
-                const QuestionDialog = sdk.getComponent("dialogs.QuestionDialog");
-                Modal.createTrackedDialog('If you don\'t specify an email address...', '', QuestionDialog, {
-                    title: _t("Warning!"),
-                    description:
-                        <div>
-                            { _t("If you don't specify an email address, you won't be able to reset your password. " +
-                                "Are you sure?") }
-                        </div>,
-                    button: _t("Continue"),
-                    onFinished: function(confirmed) {
-                        if (confirmed) {
-                            self._doSubmit(ev);
-                        }
-                    },
-                });
-            } else {
-                self._doSubmit(ev);
-            }
+        if (this.state.email == '') {
+            const QuestionDialog = sdk.getComponent("dialogs.QuestionDialog");
+            Modal.createTrackedDialog('If you don\'t specify an email address...', '', QuestionDialog, {
+                title: _t("Warning!"),
+                description:
+                    <div>
+                        { _t("If you don't specify an email address, you won't be able to reset your password. " +
+                            "Are you sure?") }
+                    </div>,
+                button: _t("Continue"),
+                onFinished: function(confirmed) {
+                    if (confirmed) {
+                        self._doSubmit(ev);
+                    }
+                },
+            });
+        } else {
+            self._doSubmit(ev);
         }
     },
 
@@ -110,6 +111,7 @@ module.exports = React.createClass({
         let email = this.state.email.trim();
         email = email.toLowerCase();
         const promise = this.props.onRegisterClick({
+            username: this.state.username.trim(),
             password: this.state.password.trim(),
             email: email,
         });
@@ -120,6 +122,57 @@ module.exports = React.createClass({
                 ev.target.disabled = false;
             });
         }
+    },
+
+    async verifyFieldsBeforeSubmit() {
+        // Blur the active element if any, so we first run its blur validation,
+        // which is less strict than the pass we're about to do below for all fields.
+        const activeElement = document.activeElement;
+        if (activeElement) {
+            activeElement.blur();
+        }
+
+        const fieldIDsInDisplayOrder = [
+            FIELD_USERNAME,
+            FIELD_PASSWORD,
+            FIELD_PASSWORD_CONFIRM,
+            FIELD_EMAIL,
+            FIELD_PHONE_NUMBER,
+        ];
+
+        // Run all fields with stricter validation that no longer allows empty
+        // values for required fields.
+        for (const fieldID of fieldIDsInDisplayOrder) {
+            const field = this[fieldID];
+            if (!field) {
+                continue;
+            }
+            // We must wait for these validations to finish before queueing
+            // up the setState below so our setState goes in the queue after
+            // all the setStates from these validate calls (that's how we
+            // know they've finished).
+            await field.validate({ allowEmpty: false });
+        }
+
+        // Validation and state updates are async, so we need to wait for them to complete
+        // first. Queue a `setState` callback and wait for it to resolve.
+        await new Promise(resolve => this.setState({}, resolve));
+
+        if (this.allFieldsValid()) {
+            return true;
+        }
+
+        const invalidField = this.findFirstInvalidField(fieldIDsInDisplayOrder);
+
+        if (!invalidField) {
+            return true;
+        }
+
+        // Focus the first invalid field and show feedback in the stricter mode
+        // that no longer allows empty values for required fields.
+        invalidField.focus();
+        invalidField.validate({ allowEmpty: false, focused: true });
+        return false;
     },
 
     /**
@@ -135,6 +188,7 @@ module.exports = React.createClass({
         return true;
     },
 
+    // :TCHAP: validation is reworked in latest code, not sure if we can blindly change this
     validateField: function(fieldID, eventType) {
         const pwd1 = this.state.password.trim();
         const pwd2 = this.state.passwordConfirm.trim();
@@ -183,17 +237,14 @@ module.exports = React.createClass({
                 }
                 break;
         }
+        return null;
     },
 
-    markFieldValid: function(fieldID, valid, errorCode) {
-        const { fieldErrors } = this.state;
-        if (valid) {
-            fieldErrors[fieldID] = null;
-        } else {
-            fieldErrors[fieldID] = errorCode;
-        }
+    markFieldValid: function(fieldID, valid) {
+        const { fieldValid } = this.state;
+        fieldValid[fieldID] = valid;
         this.setState({
-            fieldErrors,
+            fieldValid,
         });
         this.props.onValidationChange(fieldErrors);
     },
@@ -229,9 +280,29 @@ module.exports = React.createClass({
         });
     },
 
-    onPasswordBlur(ev) {
-        this.validateField(FIELD_PASSWORD, ev.type);
+    async onEmailValidate(fieldState) {
+        const result = await this.validateEmailRules(fieldState);
+        this.markFieldValid(FIELD_EMAIL, result.valid);
+        return result;
     },
+
+    validateEmailRules: withValidation({
+        description: () => _t("Use an email address to recover your account"),
+        rules: [
+            {
+                key: "required",
+                test: function({ value, allowEmpty }) {
+                    return allowEmpty || !this._authStepIsRequired('m.login.email.identity') || !!value;
+                },
+                invalid: () => _t("Enter email address (required on this homeserver)"),
+            },
+            {
+                key: "email",
+                test: ({ value }) => !value || Email.looksValid(value),
+                invalid: () => _t("Doesn't look like a valid email address"),
+            },
+        ],
+    }),
 
     onPasswordChange(ev) {
         this.setState({
@@ -239,9 +310,64 @@ module.exports = React.createClass({
         });
     },
 
-    onPasswordConfirmBlur(ev) {
-        this.validateField(FIELD_PASSWORD_CONFIRM, ev.type);
+    async onPasswordValidate(fieldState) {
+        const result = await this.validatePasswordRules(fieldState);
+        this.markFieldValid(FIELD_PASSWORD, result.valid);
+        return result;
     },
+
+    validatePasswordRules: withValidation({
+        description: function() {
+            const complexity = this.state.passwordComplexity;
+            const score = complexity ? complexity.score : 0;
+            return <progress
+                className="mx_AuthBody_passwordScore"
+                max={PASSWORD_MIN_SCORE}
+                value={score}
+            />;
+        },
+        rules: [
+            {
+                key: "required",
+                test: ({ value, allowEmpty }) => allowEmpty || !!value,
+                invalid: () => _t("Enter password"),
+            },
+            {
+                key: "complexity",
+                test: async function({ value }) {
+                    if (!value) {
+                        return false;
+                    }
+                    const { scorePassword } = await import('../../../utils/PasswordScorer');
+                    const complexity = scorePassword(value);
+                    const safe = complexity.score >= PASSWORD_MIN_SCORE;
+                    const allowUnsafe = SdkConfig.get()["dangerously_allow_unsafe_and_insecure_passwords"];
+                    this.setState({
+                        passwordComplexity: complexity,
+                        passwordSafe: safe,
+                    });
+                    return allowUnsafe || safe;
+                },
+                valid: function() {
+                    // Unsafe passwords that are valid are only possible through a
+                    // configuration flag. We'll print some helper text to signal
+                    // to the user that their password is allowed, but unsafe.
+                    if (!this.state.passwordSafe) {
+                        return _t("Password is allowed, but unsafe");
+                    }
+                    return _t("Nice, strong password!");
+                },
+                invalid: function() {
+                    const complexity = this.state.passwordComplexity;
+                    if (!complexity) {
+                        return null;
+                    }
+                    const { feedback } = complexity;
+                    return feedback.warning || feedback.suggestions[0] || _t("Keep going...");
+                },
+            },
+        ],
+    }),
 
     onPasswordConfirmChange(ev) {
         this.setState({

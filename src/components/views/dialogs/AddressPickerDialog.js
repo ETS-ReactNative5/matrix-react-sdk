@@ -114,6 +114,7 @@ module.exports = React.createClass({
             selectedList = this._addInputToList();
             if (selectedList === null) return;
         }
+        // :TCHAP: custom code for rescriting externals to join
         if (this.props.roomId) {
             const access_rules = Tchap.getAccessRules(this.props.roomId);
             if (access_rules !== "unrestricted") {
@@ -622,6 +623,7 @@ module.exports = React.createClass({
         }
 
         // Add the query at the end
+        // :TCHAP: should look on this:
         // The use of 'disabled' and 'style' is a hack in order to prevent
         // adding multiple peaople from the 1:1 creation window.
         let invitationTypeStyle = {display:  this.state.textareaDisabled ? 'none' : 'inline' };
@@ -666,6 +668,7 @@ module.exports = React.createClass({
             );
         }
 
+        // :TCHAP:
         let roomParams = null;
         if (this.props.roomId) {
             const ar = Tchap.getAccessRules(this.props.roomId) !== "unrestricted"

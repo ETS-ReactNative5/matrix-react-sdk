@@ -42,6 +42,12 @@ export default class UserSettingsDialog extends React.Component {
             "mx_UserSettingsDialog_settingsIcon",
             <GeneralUserSettingsTab />,
         ));
+        // :TCHAP:
+        /*tabs.push(new Tab(
+            _td("Flair"),
+            "mx_UserSettingsDialog_flairIcon",
+            <FlairUserSettingsTab />,
+        ));*/
         tabs.push(new Tab(
             _td("Notifications"),
             "mx_UserSettingsDialog_bellIcon",
@@ -52,6 +58,12 @@ export default class UserSettingsDialog extends React.Component {
             "mx_UserSettingsDialog_preferencesIcon",
             <PreferencesUserSettingsTab />,
         ));
+        // :TCHAP:
+        /* tabs.push(new Tab(
+            _td("Voice & Video"),
+            "mx_UserSettingsDialog_voiceIcon",
+            <VoiceUserSettingsTab />,
+        ));*/
         tabs.push(new Tab(
             _td("Security & Privacy"),
             "mx_UserSettingsDialog_securityIcon",
