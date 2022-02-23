@@ -1984,5 +1984,10 @@
     "Pin room": "Épingler le salon",
     "Pinned": "Épinglés",
     "Passphrase must be at least 8 character long": "La phrase secrète doit contenir au moins 8 caractères",
-    "Enter passphrase (8 characters minimum)": "Saisir la phrase secrète (8 caractères minimum)"
+    "Enter passphrase (8 characters minimum)": "Saisir la phrase secrète (8 caractères minimum)",
+    "Agree or Disagree": "Accepter ou refuser",
+    "Like or Dislike": "Aimer ou ne pas aimer",
+    "<reactors/><reactedWith>reacted with %(shortName)s</reactedWith>": "<reactors/><reactedWith>ont réagi avec %(shortName)s</reactedWith>",
+    "Edited at %(date)s.": "Édité à %(date)s.",
+    "edited": "édité"
 }
