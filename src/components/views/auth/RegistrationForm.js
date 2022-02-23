@@ -24,7 +24,7 @@ import Modal from '../../../Modal';
 import { _t } from '../../../languageHandler';
 import Tchap from "../../../Tchap";
 import SdkConfig from '../../../SdkConfig';
-import { SAFE_LOCALPART_REGEX } from '../../../Registration';
+// import { SAFE_LOCALPART_REGEX } from '../../../Registration';
 import withValidation from '../elements/Validation';
 
 const FIELD_EMAIL = 'field_email';
@@ -66,7 +66,7 @@ module.exports = React.createClass({
     getInitialState: function() {
         return {
             // Field error codes by field ID
-            fieldErrors: {},
+            fieldValid: {},
             username: "",
             email: "",
             password: "",
@@ -133,11 +133,9 @@ module.exports = React.createClass({
         }
 
         const fieldIDsInDisplayOrder = [
-            FIELD_USERNAME,
+            FIELD_EMAIL,
             FIELD_PASSWORD,
             FIELD_PASSWORD_CONFIRM,
-            FIELD_EMAIL,
-            FIELD_PHONE_NUMBER,
         ];
 
         // Run all fields with stricter validation that no longer allows empty
@@ -179,9 +177,9 @@ module.exports = React.createClass({
      * @returns {boolean} true if all fields were valid last time they were validated.
      */
     allFieldsValid: function() {
-        const keys = Object.keys(this.state.fieldErrors);
+        const keys = Object.keys(this.state.fieldValid);
         for (let i = 0; i < keys.length; ++i) {
-            if (this.state.fieldErrors[keys[i]]) {
+            if (!this.state.fieldValid[keys[i]]) {
                 return false;
             }
         }
@@ -246,12 +244,11 @@ module.exports = React.createClass({
         this.setState({
             fieldValid,
         });
-        this.props.onValidationChange(fieldErrors);
     },
 
     _classForField: function(fieldID, ...baseClasses) {
         let cls = baseClasses.join(' ');
-        if (this.state.fieldErrors[fieldID]) {
+        if (this.state.fieldValid[fieldID]) {
             if (cls) cls += ' ';
             cls += 'error';
         }
@@ -260,14 +257,14 @@ module.exports = React.createClass({
 
     onEmailBlur(ev) {
         this.setState({
-            isExtern: false
+            isExtern: false,
         });
         this.validateField(FIELD_EMAIL, ev.type);
         if (Email.looksValid(ev.target.value)) {
             Tchap.discoverPlatform(ev.target.value).then(e => {
                 if (Tchap.isUserExternFromServer(e)) {
                     this.setState({
-                        isExtern: true
+                        isExtern: true,
                     });
                 }
             });
