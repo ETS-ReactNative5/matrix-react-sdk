@@ -69,7 +69,6 @@ module.exports = React.createClass({
         return {
             // Field error codes by field ID
             fieldValid: {},
-            username: "",
             email: "",
             password: "",
             passwordConfirm: "",
@@ -113,7 +112,6 @@ module.exports = React.createClass({
         let email = this.state.email.trim();
         email = email.toLowerCase();
         const promise = this.props.onRegisterClick({
-            username: this.state.username.trim(),
             password: this.state.password.trim(),
             email: email,
         });
