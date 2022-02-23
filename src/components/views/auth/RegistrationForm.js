@@ -60,6 +60,7 @@ module.exports = React.createClass({
 
     getDefaultProps: function() {
         return {
+            minPasswordLength: 6,
             onValidationChange: console.error,
         };
     },
@@ -249,7 +250,7 @@ module.exports = React.createClass({
 
     _classForField: function(fieldID, ...baseClasses) {
         let cls = baseClasses.join(' ');
-        if (this.state.fieldValid[fieldID]) {
+        if (!this.state.fieldValid[fieldID]) {
             if (cls) cls += ' ';
             cls += 'error';
         }
@@ -306,6 +307,10 @@ module.exports = React.createClass({
         this.setState({
             password: ev.target.value,
         });
+    },
+
+    onPasswordBlur(ev) {
+        this.validateField(FIELD_PASSWORD, ev.type);
     },
 
     async onPasswordValidate(fieldState) {
@@ -366,6 +371,10 @@ module.exports = React.createClass({
             },
         ],
     }),
+
+    onPasswordConfirmBlur(ev) {
+        this.validateField(FIELD_PASSWORD_CONFIRM, ev.type);
+    },
 
     onPasswordConfirmChange(ev) {
         this.setState({
