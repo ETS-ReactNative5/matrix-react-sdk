@@ -24,6 +24,7 @@ import Modal from '../../../Modal';
 import { _t } from '../../../languageHandler';
 import Tchap from "../../../Tchap";
 import SdkConfig from '../../../SdkConfig';
+// :Tchap:
 // import { SAFE_LOCALPART_REGEX } from '../../../Registration';
 import withValidation from '../elements/Validation';
 
