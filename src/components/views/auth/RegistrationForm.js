@@ -78,33 +78,40 @@ module.exports = React.createClass({
         };
     },
 
+    // :Tchap: custom validation
     onSubmit: async function(ev) {
         ev.preventDefault();
 
-        const allFieldsValid = await this.verifyFieldsBeforeSubmit();
-        if (!allFieldsValid) {
-            return;
-        }
+        // validate everything, in reverse order so
+        // the error that ends up being displayed
+        // is the one from the first invalid field.
+        // It's not super ideal that this just calls
+        // onValidationChange once for each invalid field.
+        this.validateField(FIELD_EMAIL, ev.type);
+        this.validateField(FIELD_PASSWORD_CONFIRM, ev.type);
+        this.validateField(FIELD_PASSWORD, ev.type);
 
         const self = this;
-        if (this.state.email == '') {
-            const QuestionDialog = sdk.getComponent("dialogs.QuestionDialog");
-            Modal.createTrackedDialog('If you don\'t specify an email address...', '', QuestionDialog, {
-                title: _t("Warning!"),
-                description:
-                    <div>
-                        { _t("If you don't specify an email address, you won't be able to reset your password. " +
-                            "Are you sure?") }
-                    </div>,
-                button: _t("Continue"),
-                onFinished: function(confirmed) {
-                    if (confirmed) {
-                        self._doSubmit(ev);
-                    }
-                },
-            });
-        } else {
-            self._doSubmit(ev);
+        if (this.allFieldsValid()) {
+            if (this.state.email == '') {
+                const QuestionDialog = sdk.getComponent("dialogs.QuestionDialog");
+                Modal.createTrackedDialog('If you don\'t specify an email address...', '', QuestionDialog, {
+                    title: _t("Warning!"),
+                    description:
+                        <div>
+                            { _t("If you don't specify an email address, you won't be able to reset your password. " +
+                                "Are you sure?") }
+                        </div>,
+                    button: _t("Continue"),
+                    onFinished: function(confirmed) {
+                        if (confirmed) {
+                            self._doSubmit(ev);
+                        }
+                    },
+                });
+            } else {
+                self._doSubmit(ev);
+            }
         }
     },
 
