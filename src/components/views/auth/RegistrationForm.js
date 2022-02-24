@@ -68,7 +68,7 @@ module.exports = React.createClass({
     getInitialState: function() {
         return {
             // Field error codes by field ID
-            fieldValid: {},
+            fieldErrors: {},
             email: "",
             password: "",
             passwordConfirm: "",
@@ -184,9 +184,9 @@ module.exports = React.createClass({
      * @returns {boolean} true if all fields were valid last time they were validated.
      */
     allFieldsValid: function() {
-        const keys = Object.keys(this.state.fieldValid);
+        const keys = Object.keys(this.state.fieldErrors);
         for (let i = 0; i < keys.length; ++i) {
-            if (!this.state.fieldValid[keys[i]]) {
+            if (this.state.fieldErrors[keys[i]]) {
                 return false;
             }
         }
@@ -245,17 +245,22 @@ module.exports = React.createClass({
         return null;
     },
 
-    markFieldValid: function(fieldID, valid) {
-        const { fieldValid } = this.state;
-        fieldValid[fieldID] = valid;
+    markFieldValid: function(fieldID, valid, errorCode) {
+        const { fieldErrors } = this.state;
+        if (valid) {
+            fieldErrors[fieldID] = null;
+        } else {
+            fieldErrors[fieldID] = errorCode;
+        }
         this.setState({
-            fieldValid,
+            fieldErrors,
         });
+        this.props.onValidationChange(fieldErrors);
     },
 
     _classForField: function(fieldID, ...baseClasses) {
         let cls = baseClasses.join(' ');
-        if (!this.state.fieldValid[fieldID]) {
+        if (this.state.fieldErrors[fieldID]) {
             if (cls) cls += ' ';
             cls += 'error';
         }
