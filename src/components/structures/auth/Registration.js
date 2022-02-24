@@ -508,6 +508,7 @@ module.exports = React.createClass({
                 onAuthFinished={this._onUIAuthFinished}
                 inputs={this._getUIAuthInputs()}
                 makeRegistrationUrl={this.props.makeRegistrationUrl}
+                requestEmailToken={this._requestEmailToken}
                 sessionId={this.props.sessionId}
                 clientSecret={this.props.clientSecret}
                 emailSid={this.props.idSid}
