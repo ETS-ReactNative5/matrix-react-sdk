@@ -229,7 +229,7 @@ export default React.createClass({
 
     getDefaultHsUrl(defaultToMatrixDotOrg) {
         defaultToMatrixDotOrg = typeof(defaultToMatrixDotOrg) !== 'boolean' ? true : defaultToMatrixDotOrg;
-        if (!this.state.defaultHsUrl && defaultToMatrixDotOrg) return "https://matrix.org";
+        if (!this.state.defaultHsUrl && defaultToMatrixDotOrg) return "https://matrix.agent.dinum.tchap.gouv.fr/";
         return this.state.defaultHsUrl;
     },
 
