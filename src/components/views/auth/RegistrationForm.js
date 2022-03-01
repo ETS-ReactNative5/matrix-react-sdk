@@ -24,7 +24,8 @@ import Modal from '../../../Modal';
 import { _t } from '../../../languageHandler';
 import Tchap from "../../../Tchap";
 import SdkConfig from '../../../SdkConfig';
-import { SAFE_LOCALPART_REGEX } from '../../../Registration';
+// :Tchap:
+// import { SAFE_LOCALPART_REGEX } from '../../../Registration';
 import withValidation from '../elements/Validation';
 
 const FIELD_EMAIL = 'field_email';
@@ -59,6 +60,7 @@ module.exports = React.createClass({
 
     getDefaultProps: function() {
         return {
+            minPasswordLength: 6,
             onValidationChange: console.error,
         };
     },
@@ -67,7 +69,6 @@ module.exports = React.createClass({
         return {
             // Field error codes by field ID
             fieldErrors: {},
-            username: "",
             email: "",
             password: "",
             passwordConfirm: "",
@@ -77,33 +78,40 @@ module.exports = React.createClass({
         };
     },
 
+    // :Tchap: custom validation
     onSubmit: async function(ev) {
         ev.preventDefault();
 
-        const allFieldsValid = await this.verifyFieldsBeforeSubmit();
-        if (!allFieldsValid) {
-            return;
-        }
+        // validate everything, in reverse order so
+        // the error that ends up being displayed
+        // is the one from the first invalid field.
+        // It's not super ideal that this just calls
+        // onValidationChange once for each invalid field.
+        this.validateField(FIELD_EMAIL, ev.type);
+        this.validateField(FIELD_PASSWORD_CONFIRM, ev.type);
+        this.validateField(FIELD_PASSWORD, ev.type);
 
         const self = this;
-        if (this.state.email == '') {
-            const QuestionDialog = sdk.getComponent("dialogs.QuestionDialog");
-            Modal.createTrackedDialog('If you don\'t specify an email address...', '', QuestionDialog, {
-                title: _t("Warning!"),
-                description:
-                    <div>
-                        { _t("If you don't specify an email address, you won't be able to reset your password. " +
-                            "Are you sure?") }
-                    </div>,
-                button: _t("Continue"),
-                onFinished: function(confirmed) {
-                    if (confirmed) {
-                        self._doSubmit(ev);
-                    }
-                },
-            });
-        } else {
-            self._doSubmit(ev);
+        if (this.allFieldsValid()) {
+            if (this.state.email == '') {
+                const QuestionDialog = sdk.getComponent("dialogs.QuestionDialog");
+                Modal.createTrackedDialog('If you don\'t specify an email address...', '', QuestionDialog, {
+                    title: _t("Warning!"),
+                    description:
+                        <div>
+                            { _t("If you don't specify an email address, you won't be able to reset your password. " +
+                                "Are you sure?") }
+                        </div>,
+                    button: _t("Continue"),
+                    onFinished: function(confirmed) {
+                        if (confirmed) {
+                            self._doSubmit(ev);
+                        }
+                    },
+                });
+            } else {
+                self._doSubmit(ev);
+            }
         }
     },
 
@@ -111,7 +119,6 @@ module.exports = React.createClass({
         let email = this.state.email.trim();
         email = email.toLowerCase();
         const promise = this.props.onRegisterClick({
-            username: this.state.username.trim(),
             password: this.state.password.trim(),
             email: email,
         });
@@ -133,11 +140,9 @@ module.exports = React.createClass({
         }
 
         const fieldIDsInDisplayOrder = [
-            FIELD_USERNAME,
+            FIELD_EMAIL,
             FIELD_PASSWORD,
             FIELD_PASSWORD_CONFIRM,
-            FIELD_EMAIL,
-            FIELD_PHONE_NUMBER,
         ];
 
         // Run all fields with stricter validation that no longer allows empty
@@ -240,11 +245,15 @@ module.exports = React.createClass({
         return null;
     },
 
-    markFieldValid: function(fieldID, valid) {
-        const { fieldValid } = this.state;
-        fieldValid[fieldID] = valid;
+    markFieldValid: function(fieldID, valid, errorCode) {
+        const { fieldErrors } = this.state;
+        if (valid) {
+            fieldErrors[fieldID] = null;
+        } else {
+            fieldErrors[fieldID] = errorCode;
+        }
         this.setState({
-            fieldValid,
+            fieldErrors,
         });
         this.props.onValidationChange(fieldErrors);
     },
@@ -260,14 +269,14 @@ module.exports = React.createClass({
 
     onEmailBlur(ev) {
         this.setState({
-            isExtern: false
+            isExtern: false,
         });
         this.validateField(FIELD_EMAIL, ev.type);
         if (Email.looksValid(ev.target.value)) {
             Tchap.discoverPlatform(ev.target.value).then(e => {
                 if (Tchap.isUserExternFromServer(e)) {
                     this.setState({
-                        isExtern: true
+                        isExtern: true,
                     });
                 }
             });
@@ -308,6 +317,10 @@ module.exports = React.createClass({
         this.setState({
             password: ev.target.value,
         });
+    },
+
+    onPasswordBlur(ev) {
+        this.validateField(FIELD_PASSWORD, ev.type);
     },
 
     async onPasswordValidate(fieldState) {
@@ -368,6 +381,10 @@ module.exports = React.createClass({
             },
         ],
     }),
+
+    onPasswordConfirmBlur(ev) {
+        this.validateField(FIELD_PASSWORD_CONFIRM, ev.type);
+    },
 
     onPasswordConfirmChange(ev) {
         this.setState({

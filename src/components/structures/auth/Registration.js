@@ -408,7 +408,7 @@ module.exports = React.createClass({
         } : {};
 
         return this._matrixClient.register(
-            this.state.formVals.username,
+            undefined,
             this.state.formVals.password,
             undefined, // session id: included in the auth dict already
             auth,
@@ -507,6 +507,7 @@ module.exports = React.createClass({
                 makeRequest={this._makeRegisterRequest}
                 onAuthFinished={this._onUIAuthFinished}
                 inputs={this._getUIAuthInputs()}
+                makeRegistrationUrl={this.props.makeRegistrationUrl}
                 requestEmailToken={this._requestEmailToken}
                 sessionId={this.props.sessionId}
                 clientSecret={this.props.clientSecret}
