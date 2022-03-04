@@ -934,7 +934,7 @@ module.exports = withMatrixClient(React.createClass({
         const avatarUrl = this.props.member.getMxcAvatarUrl();
         let avatarElement;
         if (avatarUrl) {
-            const httpUrl = this.props.matrixClient.mxcUrlToHttp(avatarUrl, 800, 800);
+            const httpUrl = this.props.matrixClient.mxcUrlToHttp(avatarUrl, 800, 800, 'crop', false);
             // :TCHAP: antivirus
             const scImageUrl = ContentScanner.getUnencryptedContentUrl({url : Tchap.imgUrlToUri(httpUrl)}, true);
             avatarElement = <div className="mx_MemberInfo_avatar">
