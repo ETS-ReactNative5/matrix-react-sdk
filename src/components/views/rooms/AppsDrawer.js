@@ -63,7 +63,7 @@ module.exports = React.createClass({
     },
 
     componentDidMount: function() {
-        // [Tchap] Disabling Scalar Client
+        // :TCHAP: Disabling Scalar Client
         /*this.scalarClient = null;
         if (SdkConfig.get().integrations_ui_url && SdkConfig.get().integrations_rest_url) {
             this.scalarClient = new ScalarAuthClient();

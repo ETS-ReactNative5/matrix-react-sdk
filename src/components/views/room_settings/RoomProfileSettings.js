@@ -162,6 +162,7 @@ export default class RoomProfileSettings extends React.Component {
         reader.readAsDataURL(file);
     };
 
+    // :TCHAP: externals
     _getJoinRules = (roomId) => {
         const stateEventType = "m.room.join_rules";
         const keyName = "join_rule";
@@ -396,6 +397,7 @@ export default class RoomProfileSettings extends React.Component {
             }
         }
 
+        // :TCHAP: externals
         let accessRule = null;
         if (!this.state.isForumRoom) {
             accessRule = (

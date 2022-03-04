@@ -1716,5 +1716,7 @@
     "Pin room": "Pin room",
     "Pinned": "Pinned",
     "Passphrase must be at least 8 character long": "Passphrase must be at least 8 character long",
-    "Enter passphrase (8 characters minimum)": "Enter passphrase (8 characters minimum)"
+    "Enter passphrase (8 characters minimum)": "Enter passphrase (8 characters minimum)",
+    "Agree or Disagree": "Agree or Disagree",
+    "Like or Dislike": "Like or Dislike"
 }

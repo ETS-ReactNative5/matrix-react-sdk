@@ -1,7 +1,7 @@
 /*
 Copyright 2015, 2016 OpenMarket Ltd
 Copyright 2017 Vector Creations Ltd
-Copyright 2018 New Vector Ltd
+Copyright 2018, 2019 New Vector Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -23,14 +23,21 @@ import Email from '../../../email';
 import Modal from '../../../Modal';
 import { _t } from '../../../languageHandler';
 import Tchap from "../../../Tchap";
+import SdkConfig from '../../../SdkConfig';
+// :Tchap:
+// import { SAFE_LOCALPART_REGEX } from '../../../Registration';
+import withValidation from '../elements/Validation';
 
 const FIELD_EMAIL = 'field_email';
 const FIELD_PASSWORD = 'field_password';
 const FIELD_PASSWORD_CONFIRM = 'field_password_confirm';
 
+const PASSWORD_MIN_SCORE = 3; // safely unguessable: moderate protection from offline slow-hash scenario.
+
 /**
  * A pure UI component which displays a registration form.
  */
+// :TCHAP: Heavy changes
 module.exports = React.createClass({
     displayName: 'RegistrationForm',
 
@@ -62,15 +69,17 @@ module.exports = React.createClass({
         return {
             // Field error codes by field ID
             fieldErrors: {},
-            username: "",
             email: "",
             password: "",
             passwordConfirm: "",
-            isExtern: false
+            isExtern: false,
+            passwordComplexity: null,
+            passwordSafe: false,
         };
     },
 
-    onSubmit: function(ev) {
+    // :Tchap: custom validation
+    onSubmit: async function(ev) {
         ev.preventDefault();
 
         // validate everything, in reverse order so
@@ -122,6 +131,55 @@ module.exports = React.createClass({
         }
     },
 
+    async verifyFieldsBeforeSubmit() {
+        // Blur the active element if any, so we first run its blur validation,
+        // which is less strict than the pass we're about to do below for all fields.
+        const activeElement = document.activeElement;
+        if (activeElement) {
+            activeElement.blur();
+        }
+
+        const fieldIDsInDisplayOrder = [
+            FIELD_EMAIL,
+            FIELD_PASSWORD,
+            FIELD_PASSWORD_CONFIRM,
+        ];
+
+        // Run all fields with stricter validation that no longer allows empty
+        // values for required fields.
+        for (const fieldID of fieldIDsInDisplayOrder) {
+            const field = this[fieldID];
+            if (!field) {
+                continue;
+            }
+            // We must wait for these validations to finish before queueing
+            // up the setState below so our setState goes in the queue after
+            // all the setStates from these validate calls (that's how we
+            // know they've finished).
+            await field.validate({ allowEmpty: false });
+        }
+
+        // Validation and state updates are async, so we need to wait for them to complete
+        // first. Queue a `setState` callback and wait for it to resolve.
+        await new Promise(resolve => this.setState({}, resolve));
+
+        if (this.allFieldsValid()) {
+            return true;
+        }
+
+        const invalidField = this.findFirstInvalidField(fieldIDsInDisplayOrder);
+
+        if (!invalidField) {
+            return true;
+        }
+
+        // Focus the first invalid field and show feedback in the stricter mode
+        // that no longer allows empty values for required fields.
+        invalidField.focus();
+        invalidField.validate({ allowEmpty: false, focused: true });
+        return false;
+    },
+
     /**
      * @returns {boolean} true if all fields were valid last time they were validated.
      */
@@ -135,6 +193,7 @@ module.exports = React.createClass({
         return true;
     },
 
+    // :TCHAP: validation is reworked in latest code, not sure if we can blindly change this
     validateField: function(fieldID, eventType) {
         const pwd1 = this.state.password.trim();
         const pwd2 = this.state.passwordConfirm.trim();
@@ -183,6 +242,7 @@ module.exports = React.createClass({
                 }
                 break;
         }
+        return null;
     },
 
     markFieldValid: function(fieldID, valid, errorCode) {
@@ -209,14 +269,14 @@ module.exports = React.createClass({
 
     onEmailBlur(ev) {
         this.setState({
-            isExtern: false
+            isExtern: false,
         });
         this.validateField(FIELD_EMAIL, ev.type);
         if (Email.looksValid(ev.target.value)) {
             Tchap.discoverPlatform(ev.target.value).then(e => {
                 if (Tchap.isUserExternFromServer(e)) {
                     this.setState({
-                        isExtern: true
+                        isExtern: true,
                     });
                 }
             });
@@ -229,15 +289,98 @@ module.exports = React.createClass({
         });
     },
 
-    onPasswordBlur(ev) {
-        this.validateField(FIELD_PASSWORD, ev.type);
+    async onEmailValidate(fieldState) {
+        const result = await this.validateEmailRules(fieldState);
+        this.markFieldValid(FIELD_EMAIL, result.valid);
+        return result;
     },
+
+    validateEmailRules: withValidation({
+        description: () => _t("Use an email address to recover your account"),
+        rules: [
+            {
+                key: "required",
+                test: function({ value, allowEmpty }) {
+                    return allowEmpty || !this._authStepIsRequired('m.login.email.identity') || !!value;
+                },
+                invalid: () => _t("Enter email address (required on this homeserver)"),
+            },
+            {
+                key: "email",
+                test: ({ value }) => !value || Email.looksValid(value),
+                invalid: () => _t("Doesn't look like a valid email address"),
+            },
+        ],
+    }),
 
     onPasswordChange(ev) {
         this.setState({
             password: ev.target.value,
         });
     },
+
+    onPasswordBlur(ev) {
+        this.validateField(FIELD_PASSWORD, ev.type);
+    },
+
+    async onPasswordValidate(fieldState) {
+        const result = await this.validatePasswordRules(fieldState);
+        this.markFieldValid(FIELD_PASSWORD, result.valid);
+        return result;
+    },
+
+    validatePasswordRules: withValidation({
+        description: function() {
+            const complexity = this.state.passwordComplexity;
+            const score = complexity ? complexity.score : 0;
+            return <progress
+                className="mx_AuthBody_passwordScore"
+                max={PASSWORD_MIN_SCORE}
+                value={score}
+            />;
+        },
+        rules: [
+            {
+                key: "required",
+                test: ({ value, allowEmpty }) => allowEmpty || !!value,
+                invalid: () => _t("Enter password"),
+            },
+            {
+                key: "complexity",
+                test: async function({ value }) {
+                    if (!value) {
+                        return false;
+                    }
+                    const { scorePassword } = await import('../../../utils/PasswordScorer');
+                    const complexity = scorePassword(value);
+                    const safe = complexity.score >= PASSWORD_MIN_SCORE;
+                    const allowUnsafe = SdkConfig.get()["dangerously_allow_unsafe_and_insecure_passwords"];
+                    this.setState({
+                        passwordComplexity: complexity,
+                        passwordSafe: safe,
+                    });
+                    return allowUnsafe || safe;
+                },
+                valid: function() {
+                    // Unsafe passwords that are valid are only possible through a
+                    // configuration flag. We'll print some helper text to signal
+                    // to the user that their password is allowed, but unsafe.
+                    if (!this.state.passwordSafe) {
+                        return _t("Password is allowed, but unsafe");
+                    }
+                    return _t("Nice, strong password!");
+                },
+                invalid: function() {
+                    const complexity = this.state.passwordComplexity;
+                    if (!complexity) {
+                        return null;
+                    }
+                    const { feedback } = complexity;
+                    return feedback.warning || feedback.suggestions[0] || _t("Keep going...");
+                },
+            },
+        ],
+    }),
 
     onPasswordConfirmBlur(ev) {
         this.validateField(FIELD_PASSWORD_CONFIRM, ev.type);

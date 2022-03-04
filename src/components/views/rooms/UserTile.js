@@ -47,6 +47,7 @@ module.exports = React.createClass({
 
         const BaseAvatar = sdk.getComponent('avatars.BaseAvatar');
         const avatarUrl = Avatar.avatarUrlForUser(user, 36, 36, "crop");
+        // :TCHAP: antivirus
         const scImageUrl = ContentScanner.getUnencryptedContentUrl({url : Tchap.imgUrlToUri(avatarUrl)}, true);
 
         const avatarJsx = (

@@ -68,8 +68,12 @@ const MAX_SERVER_CANDIDATES = 3;
 // the list and magically have the link work.
 
 export class RoomPermalinkCreator {
-    constructor(room) {
+    // We support being given a roomId as a fallback in the event the `room` object
+    // doesn't exist or is not healthy for us to rely on. For example, loading a
+    // permalink to a room which the MatrixClient doesn't know about.
+    constructor(room, roomId=null) {
         this._room = room;
+        this._roomId = room ? room.roomId : roomId;
         this._highestPlUserId = null;
         this._populationMap = null;
         this._bannedHostsRegexps = null;
@@ -77,6 +81,10 @@ export class RoomPermalinkCreator {
         this._serverCandidates = null;
         this._started = false;
         this.base_host_url = SdkConfig.get().base_host_url;
+
+        if (!this._roomId) {
+            throw new Error("Failed to resolve a roomId for the permalink creator to use");
+        }
 
         this.onMembership = this.onMembership.bind(this);
         this.onRoomState = this.onRoomState.bind(this);
@@ -114,13 +122,21 @@ export class RoomPermalinkCreator {
         return this._started;
     }
 
+    // :TCHAP: modified for simpler urls maybe?
     forEvent(eventId) {
+        // const roomId = this._roomId;
+        // const permalinkBase = `${this.base_host_url}/#/${roomId}/${eventId}`;
+        // return `${permalinkBase}${encodeServerCandidates(this._serverCandidates)}`;
         const identifier = this._room.getCanonicalAlias() ? this._room.getCanonicalAlias() : this._room.roomId;
         const permalinkBase = `${this.base_host_url}/#/room/${identifier}/${eventId}`;
         return permalinkBase;
     }
 
+    // :TCHAP: modified for simpler urls maybe?
     forRoom() {
+        // const roomId = this._roomId;
+        // const permalinkBase = `${this.base_host_url}/#/${roomId}`;
+        // return `${permalinkBase}${encodeServerCandidates(this._serverCandidates)}`;
         const identifier = this._room.getCanonicalAlias() ? this._room.getCanonicalAlias() : this._room.roomId;
         const permalinkBase = `${this.base_host_url}/#/room/${identifier}`;
         return permalinkBase;
@@ -245,15 +261,14 @@ export class RoomPermalinkCreator {
     }
 }
 
-
 export function makeUserPermalink(userId) {
     const baseUrl = SdkConfig.get().base_host_url;
-    return `${baseUrl}/#/user/${userId}`;
+    return `${baseUrl}/#/${userId}`;
 }
 
 export function makeRoomPermalink(roomId) {
     const baseUrl = SdkConfig.get().base_host_url;
-    const permalinkBase = `${baseUrl}/#/room/${roomId}`;
+    const permalinkBase = `${baseUrl}/#/${roomId}`;
 
     if (!roomId) {
         throw new Error("can't permalink a falsey roomId");
@@ -271,6 +286,16 @@ export function makeRoomPermalink(roomId) {
     const permalinkCreator = new RoomPermalinkCreator(room);
     permalinkCreator.load();
     return permalinkCreator.forRoom();
+}
+
+export function makeGroupPermalink(groupId) {
+    const baseUrl = SdkConfig.get().base_host_url;
+    return `${baseUrl}/#/${groupId}`;
+}
+
+export function encodeServerCandidates(candidates) {
+    if (!candidates || candidates.length === 0) return '';
+    return `?via=${candidates.map(c => encodeURIComponent(c)).join("&via=")}`;
 }
 
 function getServerName(userId) {

@@ -59,6 +59,7 @@ module.exports = React.createClass({
         const enablePresenceByHsUrl = SdkConfig.get()["enable_presence_by_hs_url"];
         const hsUrl = MatrixClientPeg.get().baseUrl;
         this._showPresence = false;
+        // :TCHAP:
         // We dont want to use presence for the moment.
         /*if (enablePresenceByHsUrl && enablePresenceByHsUrl[hsUrl] !== undefined) {
             this._showPresence = enablePresenceByHsUrl[hsUrl];
@@ -455,10 +456,23 @@ module.exports = React.createClass({
         const isDMRoom = Boolean(dmRoomMap.getUserIdForRoomId(this.props.roomId));
         const isUserExtern = Tchap.isCurrentUserExtern();
         let inviteButton;
-        if (room && room.getMyMembership() === 'join' && !isDMRoom && !isUserExtern) {
+
+        if (room && room.getMyMembership() === 'join') {
+            // assume we can invite until proven false
+            let canInvite = true;
+
+            const plEvent = room.currentState.getStateEvents("m.room.power_levels", "");
+            const me = room.getMember(cli.getUserId());
+            if (plEvent && me) {
+                const content = plEvent.getContent();
+                if (content && content.invite > me.powerLevel) {
+                    canInvite = false;
+                }
+            }
+
             const AccessibleButton = sdk.getComponent("elements.AccessibleButton");
             inviteButton =
-                <AccessibleButton className="mx_MemberList_invite" onClick={this.onInviteButtonClick}>
+                <AccessibleButton className="mx_MemberList_invite" onClick={this.onInviteButtonClick} disabled={!canInvite}>
                     <span>{ _t('Invite to this room') }</span>
                 </AccessibleButton>;
         }

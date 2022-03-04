@@ -26,6 +26,7 @@ import dis from "../../../../../dispatcher";
 import Tchap from '../../../../../Tchap';
 import Modal from '../../../../../Modal';
 
+// :TCHAP: heavily customised options
 export default class GeneralRoomSettingsTab extends React.Component {
     static childContextTypes = {
         matrixClient: PropTypes.instanceOf(MatrixClient),

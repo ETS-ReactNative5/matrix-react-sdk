@@ -338,6 +338,7 @@ module.exports = React.createClass({
         if (name == undefined || name == null) name = '';
         name = name.replace(":", ":\u200b"); // add a zero-width space to allow linewrapping after the colon
 
+        // :TCHAP:
         if (this._isDirectMessageRoom(this.props.room.roomId)) {
             const room = this.props.room;
             let memberLeave = room.getMembersWithMembership("leave");
@@ -353,7 +354,6 @@ module.exports = React.createClass({
             badge = <div className={badgeClasses}>{ badgeContent }</div>;
         }
 
-        const EmojiText = sdk.getComponent('elements.EmojiText');
         let label;
         let subtextLabel;
         let tooltip;
@@ -365,14 +365,7 @@ module.exports = React.createClass({
             });
 
             subtextLabel = subtext ? <span className="mx_RoomTile_subtext">{ subtext }</span> : null;
-
-            if (this.state.selected) {
-                const nameSelected = <EmojiText>{ name }</EmojiText>;
-
-                label = <div title={name} className={nameClasses} dir="auto">{ nameSelected }</div>;
-            } else {
-                label = <EmojiText element="div" title={name} className={nameClasses} dir="auto">{ name }</EmojiText>;
-            }
+            label = <div title={name} className={nameClasses} dir="auto">{ name }</div>;
         } else if (this.state.hover) {
             const Tooltip = sdk.getComponent("elements.Tooltip");
             tooltip = <Tooltip className="mx_RoomTile_tooltip" label={this.props.room.name} dir="auto" />;
@@ -392,6 +385,7 @@ module.exports = React.createClass({
         const RoomAvatar = sdk.getComponent('avatars.RoomAvatar');
         let encryptedIndicator;
 
+        // :TCHAP: check notice room
         if (!this._isDirectMessageRoom(this.props.room.roomId) && !isNotice) {
             if (cli.isRoomEncrypted(this.props.room.roomId)) {
                 encryptedIndicator = <img src={require("../../../../res/img/tchap/padlock-encrypted.svg")} className="mx_RoomTile_dm" width="12" height="14" alt="encrypted" />;

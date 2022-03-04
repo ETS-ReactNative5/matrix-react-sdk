@@ -254,6 +254,7 @@ const LeftPanel = React.createClass({
             breadcrumbs = (<RoomBreadcrumbs collapsed={this.props.collapsed} />);
         }
 
+        // :TCHAP: UI
         return (
             <div className={containerClasses}>
                 { tagPanelContainer }

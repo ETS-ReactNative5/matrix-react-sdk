@@ -1,6 +1,7 @@
 /*
 Copyright 2015, 2016 OpenMarket Ltd
 Copyright 2018 New Vector Ltd
+Copyright 2019 Michael Telatynski <7t3chguy@gmail.com>
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -30,6 +31,8 @@ import MultiInviter from './utils/MultiInviter';
 import { linkifyAndSanitizeHtml } from './HtmlUtils';
 import QuestionDialog from "./components/views/dialogs/QuestionDialog";
 import WidgetUtils from "./utils/WidgetUtils";
+import {textToHtmlRainbow} from "./utils/colour";
+import Promise from "bluebird";
 
 class Command {
     constructor({name, args='', description, runFn, hideCompletionAfterSpace=false}) {
@@ -99,6 +102,154 @@ export const CommandMap = {
             return success();
         },
         hideCompletionAfterSpace: true,
+    }),
+
+    upgraderoom: new Command({
+        name: 'upgraderoom',
+        args: '<new_version>',
+        description: _td('Upgrades a room to a new version'),
+        runFn: function(roomId, args) {
+            if (args) {
+                const room = MatrixClientPeg.get().getRoom(roomId);
+                Modal.createTrackedDialog('Slash Commands', 'upgrade room confirmation',
+                    QuestionDialog, {
+                    title: _t('Room upgrade confirmation'),
+                    description: (
+                        <div>
+                            <p>{_t("Upgrading a room can be destructive and isn't always necessary.")}</p>
+                            <p>
+                                {_t(
+                                    "Room upgrades are usually recommended when a room version is considered " +
+                                    "<i>unstable</i>. Unstable room versions might have bugs, missing features, or " +
+                                    "security vulnerabilities.",
+                                    {}, {
+                                        "i": (sub) => <i>{sub}</i>,
+                                    },
+                                )}
+                            </p>
+                            <p>
+                                {_t(
+                                    "Room upgrades usually only affect <i>server-side</i> processing of the " +
+                                    "room. If you're having problems with your Riot client, please file an issue " +
+                                    "with <issueLink />.",
+                                    {}, {
+                                        "i": (sub) => <i>{sub}</i>,
+                                        "issueLink": () => {
+                                            return <a href="https://github.com/vector-im/riot-web/issues/new/choose"
+                                                      target="_blank" rel="noopener">
+                                                https://github.com/vector-im/riot-web/issues/new/choose
+                                            </a>;
+                                        },
+                                    },
+                                )}
+                            </p>
+                            <p>
+                                {_t(
+                                    "<b>Warning</b>: Upgrading a room will <i>not automatically migrate room " +
+                                    "members to the new version of the room.</i> We'll post a link to the new room " +
+                                    "in the old version of the room - room members will have to click this link to " +
+                                    "join the new room.",
+                                    {}, {
+                                        "b": (sub) => <b>{sub}</b>,
+                                        "i": (sub) => <i>{sub}</i>,
+                                    },
+                                )}
+                            </p>
+                            <p>
+                                {_t(
+                                    "Please confirm that you'd like to go forward with upgrading this room " +
+                                    "from <oldVersion /> to <newVersion />.",
+                                    {},
+                                    {
+                                        oldVersion: () => <code>{room ? room.getVersion() : "1"}</code>,
+                                        newVersion: () => <code>{args}</code>,
+                                    },
+                                )}
+                            </p>
+                        </div>
+                    ),
+                    button: _t("Upgrade"),
+                    onFinished: (confirm) => {
+                        if (!confirm) return;
+
+                        MatrixClientPeg.get().upgradeRoom(roomId, args);
+                    },
+                });
+                return success();
+            }
+            return reject(this.getUsage());
+        },
+    }),
+
+    nick: new Command({
+        name: 'nick',
+        args: '<display_name>',
+        description: _td('Changes your display nickname'),
+        runFn: function(roomId, args) {
+            if (args) {
+                return success(MatrixClientPeg.get().setDisplayName(args));
+            }
+            return reject(this.getUsage());
+        },
+    }),
+
+    myroomnick: new Command({
+        name: 'myroomnick',
+        args: '<display_name>',
+        description: _td('Changes your display nickname in the current room only'),
+        runFn: function(roomId, args) {
+            if (args) {
+                const cli = MatrixClientPeg.get();
+                const ev = cli.getRoom(roomId).currentState.getStateEvents('m.room.member', cli.getUserId());
+                const content = {
+                    ...ev ? ev.getContent() : { membership: 'join' },
+                    displayname: args,
+                };
+                return success(cli.sendStateEvent(roomId, 'm.room.member', content, cli.getUserId()));
+            }
+            return reject(this.getUsage());
+        },
+    }),
+
+    myroomavatar: new Command({
+        name: 'myroomavatar',
+        args: '[<mxc_url>]',
+        description: _td('Changes your avatar in this current room only'),
+        runFn: function(roomId, args) {
+            const cli = MatrixClientPeg.get();
+            const room = cli.getRoom(roomId);
+            const userId = cli.getUserId();
+
+            let promise = Promise.resolve(args);
+            if (!args) {
+                promise = new Promise((resolve) => {
+                    const fileSelector = document.createElement('input');
+                    fileSelector.setAttribute('type', 'file');
+                    fileSelector.onchange = (ev) => {
+                        const file = ev.target.files[0];
+
+                        const UploadConfirmDialog = sdk.getComponent("dialogs.UploadConfirmDialog");
+                        Modal.createTrackedDialog('Upload Files confirmation', '', UploadConfirmDialog, {
+                            file,
+                            onFinished: (shouldContinue) => {
+                                if (shouldContinue) resolve(cli.uploadContent(file));
+                            },
+                        });
+                    };
+
+                    fileSelector.click();
+                });
+            }
+
+            return success(promise.then((url) => {
+                const ev = room.currentState.getStateEvents('m.room.member', userId);
+                const content = {
+                    ...ev ? ev.getContent() : { membership: 'join' },
+                    avatar_url: url,
+                };
+                return cli.sendStateEvent(roomId, 'm.room.member', content, userId);
+            }));
+        },
     }),
 
     tint: new Command({
@@ -344,7 +495,7 @@ export const CommandMap = {
     unban: new Command({
         name: 'unban',
         args: '<user-id>',
-        description: _td('Unbans user with given id'),
+        description: _td('Unbans user with given ID'),
         runFn: function(roomId, args) {
             if (args) {
                 const matches = args.match(/^(\S+)$/);
@@ -467,6 +618,36 @@ export const CommandMap = {
         },
     }),
 
+    devtools: new Command({
+        name: 'devtools',
+        description: _td('Opens the Developer Tools dialog'),
+        runFn: function(roomId) {
+            const DevtoolsDialog = sdk.getComponent('dialogs.DevtoolsDialog');
+            Modal.createDialog(DevtoolsDialog, {roomId});
+            return success();
+        },
+    }),
+
+    addwidget: new Command({
+        name: 'addwidget',
+        args: '<url>',
+        description: _td('Adds a custom widget by URL to the room'),
+        runFn: function(roomId, args) {
+            if (!args || (!args.startsWith("https://") && !args.startsWith("http://"))) {
+                return reject(_t("Please supply a https:// or http:// widget URL"));
+            }
+            if (WidgetUtils.canUserModifyWidgets(roomId)) {
+                const userId = MatrixClientPeg.get().getUserId();
+                const nowMs = (new Date()).getTime();
+                const widgetId = encodeURIComponent(`${roomId}_${userId}_${nowMs}`);
+                return success(WidgetUtils.setRoomWidget(
+                    roomId, widgetId, "m.custom", args, "Custom Widget", {}));
+            } else {
+                return reject(_t("You cannot modify widgets in this room."));
+            }
+        },
+    }),
+
     // Verify a user, device, and pubkey tuple
     verify: new Command({
         name: 'verify',
@@ -545,6 +726,39 @@ export const CommandMap = {
         description: _td('Displays action'),
         hideCompletionAfterSpace: true,
     }),
+
+    discardsession: new Command({
+        name: 'discardsession',
+        description: _td('Forces the current outbound group session in an encrypted room to be discarded'),
+        runFn: function(roomId) {
+            try {
+                MatrixClientPeg.get().forceDiscardSession(roomId);
+            } catch (e) {
+                return reject(e.message);
+            }
+            return success();
+        },
+    }),
+
+    rainbow: new Command({
+        name: "rainbow",
+        description: _td("Sends the given message coloured as a rainbow"),
+        args: '<message>',
+        runFn: function(roomId, args) {
+            if (!args) return reject(this.getUserId());
+            return success(MatrixClientPeg.get().sendHtmlMessage(roomId, args, textToHtmlRainbow(args)));
+        },
+    }),
+
+    rainbowme: new Command({
+        name: "rainbowme",
+        description: _td("Sends the given emote coloured as a rainbow"),
+        args: '<message>',
+        runFn: function(roomId, args) {
+            if (!args) return reject(this.getUserId());
+            return success(MatrixClientPeg.get().sendHtmlEmote(roomId, args, textToHtmlRainbow(args)));
+        },
+    }),
 };
 /* eslint-enable babel/no-invalid-this */
 
@@ -553,6 +767,7 @@ export const CommandMap = {
 const aliases = {
     j: "join",
     goto: "join", // because it handles event permalinks magically
+    roomnick: "myroomnick",
 };
 
 

@@ -122,6 +122,8 @@ export default React.createClass({
                         { avatar }
                     </div>
                     <div className="mx_ConfirmUserActionDialog_name">{ name }</div>
+                    {/* :TCHAP: hiding MID*/}
+                    {/* <div className="mx_ConfirmUserActionDialog_userId">{ userId }</div>*/}
                 </div>
                 { reasonBox }
                 <DialogButtons primaryButton={this.props.action}
