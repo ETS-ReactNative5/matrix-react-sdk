@@ -411,6 +411,9 @@ module.exports = React.createClass({
     // down the extra calls.
     // There are duplicate calls because every time setState is called in this file, a new render of the component
     // happens, which in turn triggers a call to /register (in InteractiveAuth). This tends to create useless calls.
+    // The two calls are made to the same homeserver, and return two different sessionId. Only one is used, the other
+    // is called for nothing. But as long as the two calls are made to the same HS, we can use either sessionId,
+    // so registration works.
     _makeRegisterRequest: function(auth) {
         // Only send the bind params if we're sending username / pw params
         // (Since we need to send no params at all to use the ones saved in the
