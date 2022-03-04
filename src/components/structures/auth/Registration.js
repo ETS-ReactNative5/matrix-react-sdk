@@ -94,13 +94,22 @@ module.exports = React.createClass({
             isUrl: this.props.customIsUrl,
             // Phase of the overall registration dialog.
             phase: PHASE_REGISTRATION,
-            flows: null,
+            // flows: null,
+            // TCHAP : set flows since we already know what they are. This is necessary because of the removed call to
+            // _replaceClient in componentWillMount.
+            flows: [{"stages": ["m.login.email.identity"]}],
         };
     },
 
     componentWillMount: function() {
         this._unmounted = false;
-        this._replaceClient();
+        // this._replaceClient();
+        // TCHAP : avoid making a call to /register before we know which HS to use.
+        // So don't call replaceClient.
+        this._matrixClient = Matrix.createClient({
+            baseUrl: this.state.hsUrl,
+            idBaseUrl: this.state.isUrl,
+        });
     },
 
     // :TCHAP: unused
@@ -398,6 +407,13 @@ module.exports = React.createClass({
         });
     },
 
+    // TCHAP : this function is called twice, which not useful. But registration code is too complicated to track
+    // down the extra calls.
+    // There are duplicate calls because every time setState is called in this file, a new render of the component
+    // happens, which in turn triggers a call to /register (in InteractiveAuth). This tends to create useless calls.
+    // The two calls are made to the same homeserver, and return two different sessionId. Only one is used, the other
+    // is called for nothing. But as long as the two calls are made to the same HS, we can use either sessionId,
+    // so registration works.
     _makeRegisterRequest: function(auth) {
         // Only send the bind params if we're sending username / pw params
         // (Since we need to send no params at all to use the ones saved in the
@@ -407,7 +423,16 @@ module.exports = React.createClass({
             msisdn: true,
         } : {};
 
-        return this._matrixClient.register(
+        // TCHAP : create a new matrixClient on demand, from the urls in this.state.
+        // Using this._matrixClient caused problems because its urls were out of sync with the ones in this.state.
+        // We could remove this._matrixClient completely, it would make more sense, but for now we will leave
+        // it since it works...
+        // return this._matrixClient.register( // removed original code
+        const client = Matrix.createClient({
+            baseUrl: this.state.hsUrl,
+            idBaseUrl: this.state.isUrl,
+        });
+        return client.register(
             undefined,
             this.state.formVals.password,
             undefined, // session id: included in the auth dict already
