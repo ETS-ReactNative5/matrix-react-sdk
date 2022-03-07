@@ -514,7 +514,8 @@ module.exports = React.createClass({
                 //'im.vector.rule.member_event',
                 '.m.rule.call',
                 '.m.rule.suppress_notices',
-                '.m.rule.tombstone',
+                // :Tchap:
+                // '.m.rule.tombstone',
             ];
             for (const i in vectorRuleIds) {
                 const vectorRuleId = vectorRuleIds[i];
