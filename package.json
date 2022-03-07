@@ -1,6 +1,6 @@
 {
   "name": "matrix-react-sdk",
-  "version": "2.4.0-tchap-rc.2",
+  "version": "2.4.0-tchap-rc.3",
   "description": "SDK for tchap-web using React",
   "author": "MinArm/DINUM/matrix.org",
   "repository": {
