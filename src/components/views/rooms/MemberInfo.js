@@ -698,7 +698,7 @@ module.exports = withMatrixClient(React.createClass({
 
         let ignoreButton = null;
         let insertPillButton = null;
-        let inviteUserButton = null;
+        // let inviteUserButton = null;
         let readReceiptButton = null;
         let sendMessage = null;
 
@@ -771,11 +771,13 @@ module.exports = withMatrixClient(React.createClass({
                 //         { _t('Invite') }
                 //     </AccessibleButton>
                 // );
-                sendMessage = (
-                    <AccessibleButton onClick={this.onNewDMClick} className={"mx_MemberInfo_field"}>
-                        { _t('Send a message') }
-                    </AccessibleButton>
-                );
+                if (!userExtern) {
+                    sendMessage = (
+                        <AccessibleButton onClick={this.onNewDMClick} className={"mx_MemberInfo_field"}>
+                            {_t('Send a message')}
+                        </AccessibleButton>
+                    );
+                }
             }
         }
 
