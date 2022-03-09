@@ -771,6 +771,8 @@ module.exports = withMatrixClient(React.createClass({
                 //         { _t('Invite') }
                 //     </AccessibleButton>
                 // );
+                
+                // :Tchap:
                 if (!userExtern) {
                     sendMessage = (
                         <AccessibleButton onClick={this.onNewDMClick} className={"mx_MemberInfo_field"}>
