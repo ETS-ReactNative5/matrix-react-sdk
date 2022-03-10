@@ -263,7 +263,8 @@ export class RoomPermalinkCreator {
 
 export function makeUserPermalink(userId) {
     const baseUrl = SdkConfig.get().base_host_url;
-    return `${baseUrl}/#/${userId}`;
+    return `${baseUrl}/#/user/${userId}`; // :TCHAP: re-add /user in the URL, it breaks pills.
+    // The problem appeared between 2.3.7 and 2.4.0.
 }
 
 export function makeRoomPermalink(roomId) {
