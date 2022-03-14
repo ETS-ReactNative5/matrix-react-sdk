@@ -33,6 +33,7 @@ import dis from '../../../dispatcher';
 import Modal from '../../../Modal';
 import sdk from '../../../index';
 import { _t } from '../../../languageHandler';
+import {onStartChatFinished} from "../../../RoomInvite";
 import createRoom from '../../../createRoom';
 import DMRoomMap from '../../../utils/DMRoomMap';
 import Unread from '../../../Unread';
@@ -532,11 +533,28 @@ module.exports = withMatrixClient(React.createClass({
         this._applyPowerChange(roomId, target, powerLevel, powerLevelEvent);
     },
 
+    _buildAddrObject: function() {
+        const addrObject = {};
+        const user = this.props.member.user;
+        addrObject.address = user ? user.userId : this.props.member.userId;
+        addrObject.avatarMxc = user ? user.avatarUrl : null;
+        addrObject.displayName = user ? user.displayName : this.props.member.rawDisplayName;
+        addrObject.addressType = "mx-user-id";
+        addrObject.isKnown = true;
+
+        return [addrObject];
+    },
+
     onNewDMClick: function() {
-        this.setState({ updating: this.state.updating + 1 });
-        createRoom({dmUserId: this.props.member.userId}).finally(() => {
-            this.setState({ updating: this.state.updating - 1 });
-        }).done();
+        // :Tchap: Element code at this point just recreate new dms every time
+        // Updated version around this time can be found
+        // i.e. at https://github.com/matrix-org/matrix-react-sdk/blob/b07e50d/src/components/views/rooms/MemberInfo.js#L392
+        // this.setState({ updating: this.state.updating + 1 });
+        // createRoom({dmUserId: this.props.member.userId}).finally(() => {
+        //     this.setState({ updating: this.state.updating - 1 });
+        // }).done();
+
+        onStartChatFinished(true, this._buildAddrObject());
     },
 
     onLeaveClick: function() {
@@ -771,7 +789,7 @@ module.exports = withMatrixClient(React.createClass({
                 //         { _t('Invite') }
                 //     </AccessibleButton>
                 // );
-                
+
                 // :Tchap:
                 if (!userExtern) {
                     sendMessage = (
