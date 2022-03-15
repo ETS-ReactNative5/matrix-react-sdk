@@ -23,6 +23,21 @@ import SdkConfig from './SdkConfig';
 // to add to permalinks. The servers are appended as ?via=example.org
 const MAX_SERVER_CANDIDATES = 3;
 
+/* :TCHAP:
+Matrix-to links are links which can be used across matrix servers.
+Since Tchap is a closed federation, we don't use matrix-to links. (we don't
+want people hopping into Tchap rooms)
+We replace them with tchap permalinks (e.g. pointing to https://tchap.gouv.fr
+instead of https://matrix.to).
+Tchap permalinks are built differently from matrix.to links : they have
+"user" or "room" or "group" in the path, while matrix.to link do not. This
+can cause merge problems (e.g. a "user" gets removed or added by the merge).
+
+Additional reading : Tchap-android has solved these problems by converting
+all permalinks to matrix.to links (the opposite of tchap web !) :
+https://github.com/tchapgouv/tchap-android-v2/blob/fa3abecf8f3f96be288b8dc66bc4cab163887ec5/matrix-sdk-android/src/main/java/org/matrix/android/sdk/api/session/permalinks/MatrixToConverter.kt
+*/
+
 
 // Permalinks can have servers appended to them so that the user
 // receiving them can have a fighting chance at joining the room.
@@ -122,7 +137,8 @@ export class RoomPermalinkCreator {
         return this._started;
     }
 
-    // :TCHAP: modified for simpler urls maybe?
+    // :TCHAP: modified because we don't use matrix-to urls in tchap, so we replace them with
+    // urls pointing to tchap.
     forEvent(eventId) {
         // const roomId = this._roomId;
         // const permalinkBase = `${this.base_host_url}/#/${roomId}/${eventId}`;
@@ -132,7 +148,8 @@ export class RoomPermalinkCreator {
         return permalinkBase;
     }
 
-    // :TCHAP: modified for simpler urls maybe?
+    // :TCHAP: modified because we don't use matrix-to urls in tchap, so we replace them with
+    // urls pointing to tchap.
     forRoom() {
         // const roomId = this._roomId;
         // const permalinkBase = `${this.base_host_url}/#/${roomId}`;
@@ -263,12 +280,12 @@ export class RoomPermalinkCreator {
 
 export function makeUserPermalink(userId) {
     const baseUrl = SdkConfig.get().base_host_url;
-    return `${baseUrl}/#/${userId}`;
+    return `${baseUrl}/#/user/${userId}`; // :TCHAP: added /user in 2.3.7
 }
 
 export function makeRoomPermalink(roomId) {
     const baseUrl = SdkConfig.get().base_host_url;
-    const permalinkBase = `${baseUrl}/#/${roomId}`;
+    const permalinkBase = `${baseUrl}/#/room/${roomId}`; // :TCHAP: added /room in 2.3.7
 
     if (!roomId) {
         throw new Error("can't permalink a falsey roomId");
@@ -288,16 +305,18 @@ export function makeRoomPermalink(roomId) {
     return permalinkCreator.forRoom();
 }
 
+/* :TCHAP: removed in 2.3.7
 export function makeGroupPermalink(groupId) {
     const baseUrl = SdkConfig.get().base_host_url;
     return `${baseUrl}/#/${groupId}`;
 }
-
+*/
+/* :TCHAP: removed in 2.3.7
 export function encodeServerCandidates(candidates) {
     if (!candidates || candidates.length === 0) return '';
     return `?via=${candidates.map(c => encodeURIComponent(c)).join("&via=")}`;
 }
-
+*/
 function getServerName(userId) {
     return userId.split(":").splice(1).join(":");
 }
