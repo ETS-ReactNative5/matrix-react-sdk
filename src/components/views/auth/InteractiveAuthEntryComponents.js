@@ -127,6 +127,8 @@ export const PasswordAuthEntry = React.createClass({
                 <input type="submit"
                     className="mx_Dialog_primary"
                     disabled={!this.state.passwordValid}
+                    /* :TCHAP: label and translate button */
+                    value={_t("OK")}
                 />
             );
         }
