@@ -145,7 +145,7 @@ export default class IncomingSasDialog extends React.Component {
         return (
             <div>
                 {profile}
-                /* :TCHAP: keep older version of this message until we translate the new one. */
+                {/* :TCHAP: keep older version of this message until we translate the new one. */}
                 <p>{_t("One of your devices wants to check your current device. " +
                   "By performing this verification, a link of trust will be established " +
                   "between your two devices to facilitate the sharing of encryption keys.",
