@@ -74,6 +74,7 @@ export default class LogoutDialog extends React.Component {
             import('../../../async-components/views/dialogs/ExportE2eKeysDialog'),
             {
                 matrixClient: MatrixClientPeg.get(),
+                onFinished: this._onFinished,
             },
         );
     }

@@ -1718,5 +1718,9 @@
     "Passphrase must be at least 8 character long": "Passphrase must be at least 8 character long",
     "Enter passphrase (8 characters minimum)": "Enter passphrase (8 characters minimum)",
     "Agree or Disagree": "Agree or Disagree",
-    "Like or Dislike": "Like or Dislike"
+    "Like or Dislike": "Like or Dislike",
+    "Export room keys successful": "Export room keys successful",
+    "Your Tchap Keys (encryption keys) have been saved successfully, you can log out": "Your Tchap Keys (encryption keys) have been saved successfully, you can log out",
+    "Your Tchap Keys are now in a file on your device, protected by your Chat Keys password. Remember to save this file in a place where you can find it. You can rename it if you wish. At your next connection, you can import your Tchap Keys using your password to unlock your messages, which will then become readable again. Warning: Tchap secures your messages by renewing your Tchap Keys often, so remember to back up your keys regularly, or at least before logging out.": "Your Tchap Keys are now in a file on your device, protected by your Chat Keys password. Remember to save this file in a place where you can find it. You can rename it if you wish. At your next connection, you can import your Tchap Keys using your password to unlock your messages, which will then become readable again. Warning: Tchap secures your messages by renewing your Tchap Keys often, so remember to back up your keys regularly, or at least before logging out.",
+    "If you have backed up your Tchap Keys correctly, you can now log out safely.": "If you have backed up your Tchap Keys correctly, you can now log out safely."
 }
