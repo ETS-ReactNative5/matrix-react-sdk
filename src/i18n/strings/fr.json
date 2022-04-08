@@ -2079,5 +2079,6 @@
     "Direct messages": "Messages directs",
     "New direct": "Nouveau message direct",
     "Pin room": "Épingler le salon",
-    "Pinned": "Épinglés"
+    "Pinned": "Épinglés",
+    "Or <requestLink>import your keys</requestLink>.": "Ou bien <requestLink>importez vos clés</requestLink>."
 }
