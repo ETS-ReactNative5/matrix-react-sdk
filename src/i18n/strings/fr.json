@@ -2081,8 +2081,7 @@
     "Pin room": "Épingler le salon",
     "Pinned": "Épinglés",
     "Export room keys successful": "Sauvegarde des clés réussie",
-    "Your Tchap Keys (encryption keys) have been saved successfully, you can log out": "Vos Clés Tchap (clés de chiffrement) ont été sauvegardées avec succès, vous pouvez vous déconnecter",
-    "Your Tchap Keys are now in a file on your device, protected by your Chat Keys password. Remember to save this file in a place where you can find it. You can rename it if you wish. At your next connection, you can import your Tchap Keys using your password to unlock your messages, which will then become readable again. Warning: Tchap secures your messages by renewing your Tchap Keys often, so remember to back up your keys regularly, or at least before logging out.": "Vos Clés Tchap sont maintenant dans un fichier sur votre appareil, protégé par votre mot de passe Clés Tchap. Pensez à enregistrer ce fichier dans un endroit où vous pourrez le retrouver. Vous pouvez le renommer si vous le souhaitez.'A votre prochaine connexion, vous pourrez importez vos Clés Tchap grâce à votre mot de passe pour déverrouiller vos messages qui deviendront alors à nouveau lisibles. Attention : Tchap sécurise vos messages en renouvellant souvent vos Clés Tchap, donc n’oubliez pas de sauvegarder vos clés régulièrement, ou au moins avant de vous déconnecter.",
-    "If you have backed up your Tchap Keys correctly, you can now log out safely.": "Si vous avez bien sauvegardé vos Clés Tchap, vous pouvez maintenant vous déconnecter en toute sécurité."
-
+    "Your Tchap Keys (encryption keys) have been saved successfully.": "Vos Clés Tchap (clés de chiffrement) ont été sauvegardées avec succès.",
+    "You can import them the next time you log in to unlock your messages.": "Vous pourrez les importer à votre prochaine connexion pour déverrouiller vos messages.",
+    "Messages received after this save cannot be unlocked. So you won't be able to read them.": "Les messages reçus après cette sauvegarde ne pourront pas être déverrouillés. Vous ne pourrez donc pas les lire."
 }

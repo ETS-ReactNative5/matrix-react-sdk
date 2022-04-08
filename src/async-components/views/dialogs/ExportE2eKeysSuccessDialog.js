@@ -56,20 +56,12 @@ export default React.createClass({
                 title={_t("Export room keys successful")}
             >
                 <div className="mx_Dialog_content">
-                    <p>{_t('Your Tchap Keys (encryption keys) have been saved successfully, you can log out')}</p>
-
-                    <p>{_t('Your Tchap Keys are now in a file on your device, protected by your Chat Keys password. ' +
-                    'Remember to save this file in a place where you can find it. You can rename it if you wish. ' +
-                    'At your next connection, you can import your Tchap Keys using your password to unlock your messages, which will then become readable again. ' +
-                    'Warning: Tchap secures your messages by renewing your Tchap Keys often, so remember to back up your keys regularly, or at least before logging out.')}
-                    </p>
-                    <p>{_t('If you have backed up your Tchap Keys correctly, you can now log out safely.')}</p>
+                    <p>{_t('Your Tchap Keys (encryption keys) have been saved successfully.')}</p>
+                    <p>{_t('You can import them the next time you log in to unlock your messages.')}</p>
+                    <p>{_t("Messages received after this save cannot be unlocked. So you won't be able to read them.")}</p>
                 </div>
                 <div className='mx_Dialog_buttons'>
-                    <button onClick={this._onCancelClick}>
-                        { _t("Cancel") }
-                    </button>
-                    <button className="mx_Dialog_primary" onClick={this._onLogoutConfirm}>
+                    <button className="mx_Dialog_primary danger" onClick={this._onLogoutConfirm}>
                         { _t("Sign out") }
                     </button>
                 </div>
