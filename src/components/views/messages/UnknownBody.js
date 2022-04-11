@@ -18,8 +18,6 @@ limitations under the License.
 
 import React from 'react';
 import { _t } from '../../../languageHandler';
-import Modal from '../../../Modal';
-import MatrixClientPeg from '../../../MatrixClientPeg';
 
 module.exports = React.createClass({
     displayName: 'UnknownBody',

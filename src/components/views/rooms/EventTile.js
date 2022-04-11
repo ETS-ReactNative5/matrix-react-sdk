@@ -32,7 +32,6 @@ import withMatrixClient from '../../../wrappers/withMatrixClient';
 import dis from '../../../dispatcher';
 import SettingsStore from "../../../settings/SettingsStore";
 import {EventStatus} from 'matrix-js-sdk';
-import MatrixClientPeg from '../../../MatrixClientPeg';
 
 const ObjectUtils = require('../../../ObjectUtils');
 
@@ -512,7 +511,7 @@ module.exports = withMatrixClient(React.createClass({
     _onImportE2eKeysClicked: function() {
         Modal.createTrackedDialogAsync('Import E2E Keys', '',
             import('../../../async-components/views/dialogs/ImportE2eKeysDialog'),
-            {matrixClient: MatrixClientPeg.get()},
+            {matrixClient: this.props.matrixClient},
         );
     },
 
