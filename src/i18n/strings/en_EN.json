@@ -1719,5 +1719,5 @@
     "Enter passphrase (8 characters minimum)": "Enter passphrase (8 characters minimum)",
     "Agree or Disagree": "Agree or Disagree",
     "Like or Dislike": "Like or Dislike",
-    "<requestLink>Import my saved keys</requestLink> on my device.": "<requestLink>Import my saved keys</requestLink> on my device."
+    "<requestLink>Import from file</requestLink>": "<requestLink>Import from file</requestLink>"
 }

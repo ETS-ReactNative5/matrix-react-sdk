@@ -508,6 +508,7 @@ module.exports = withMatrixClient(React.createClass({
         });
     },
 
+    // :TCHAP:
     _onImportE2eKeysClicked: function() {
         Modal.createTrackedDialogAsync('Import E2E Keys', '',
             import('../../../async-components/views/dialogs/ImportE2eKeysDialog'),
@@ -670,7 +671,7 @@ module.exports = withMatrixClient(React.createClass({
             );
 
         const importKeys = _t(
-            '<requestLink>Import my saved keys</requestLink> on my device.',
+            '<requestLink>Import from file</requestLink>',
             {},
             {
                 requestLink: (sub) => <a onClick={this._onImportE2eKeysClicked}>{sub}</a>,
@@ -681,9 +682,9 @@ module.exports = withMatrixClient(React.createClass({
         const keyRequestInfo = isEncryptionFailure ?
             <div className="mx_EventTile_keyRequestInfo">
                 <span className="mx_EventTile_keyRequestInfo_text">
-                    { keyRequestInfoContent }
-                    &nbsp;-&nbsp;
                     { importKeys }
+                    &nbsp;&nbsp;
+                    { keyRequestInfoContent }
                 </span>
                 <ToolTipButton helpText={keyRequestHelpText} />
             </div> : null;
