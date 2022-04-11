@@ -24,13 +24,6 @@ import MatrixClientPeg from '../../../MatrixClientPeg';
 module.exports = React.createClass({
     displayName: 'UnknownBody',
 
-    _onImportE2eKeysClicked: function() {
-        Modal.createTrackedDialogAsync('Import E2E Keys', '',
-            import('../../../async-components/views/dialogs/ImportE2eKeysDialog'),
-            {matrixClient: MatrixClientPeg.get()},
-        );
-    },
-
     render: function() {
         let tooltip = _t("Removed or unknown message type");
         if (this.props.mxEvent.isRedacted()) {
@@ -41,21 +34,9 @@ module.exports = React.createClass({
         }
 
         const event = this.props.mxEvent.getContent();
-        let text, text2;
+        let text;
         if (event && event.msgtype && event.msgtype === "m.bad.encrypted") {
             text = _t("Decryption fail: Please open Tchap on an other connected device to allow key sharing.");
-            // text += ' ';
-            text2 = _t(
-                'Or <requestLink>import your keys</requestLink>.',
-                {},
-                {
-                    // requestLink: (sub) => <b><a onClick={this._onImportE2eKeysClicked}>{ sub }</a></b>,
-                    // requestLink2: (sub) => <a>toto</a>,
-                    requestLink: (sub) => <a className="mx_UnknownBody_importKeys_link" onClick={this._onImportE2eKeysClicked}>{sub}</a>,
-                },
-            );
-            // console.error(text_alt);
-            // text = ReactDOMServer.renderToString(text);
 
         } else {
             text = event.body;
@@ -63,7 +44,7 @@ module.exports = React.createClass({
 
         return (
             <span className="mx_UnknownBody" title={tooltip}>
-                { text } {text2}
+                { text }
             </span>
         );
     },

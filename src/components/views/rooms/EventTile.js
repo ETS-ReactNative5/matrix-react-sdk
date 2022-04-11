@@ -32,6 +32,7 @@ import withMatrixClient from '../../../wrappers/withMatrixClient';
 import dis from '../../../dispatcher';
 import SettingsStore from "../../../settings/SettingsStore";
 import {EventStatus} from 'matrix-js-sdk';
+import MatrixClientPeg from '../../../MatrixClientPeg';
 
 const ObjectUtils = require('../../../ObjectUtils');
 
@@ -508,6 +509,13 @@ module.exports = withMatrixClient(React.createClass({
         });
     },
 
+    _onImportE2eKeysClicked: function() {
+        Modal.createTrackedDialogAsync('Import E2E Keys', '',
+            import('../../../async-components/views/dialogs/ImportE2eKeysDialog'),
+            {matrixClient: MatrixClientPeg.get()},
+        );
+    },
+
     render: function() {
         const MessageTimestamp = sdk.getComponent('messages.MessageTimestamp');
         const SenderProfile = sdk.getComponent('messages.SenderProfile');
@@ -662,11 +670,21 @@ module.exports = withMatrixClient(React.createClass({
                 {'requestLink': (sub) => <a onClick={this.onRequestKeysClick}>{ sub }</a>},
             );
 
+        const importKeys = _t(
+            '<requestLink>Import my saved keys</requestLink> on my device.',
+            {},
+            {
+                requestLink: (sub) => <a onClick={this._onImportE2eKeysClicked}>{sub}</a>,
+            },
+        );
+
         const ToolTipButton = sdk.getComponent('elements.ToolTipButton');
         const keyRequestInfo = isEncryptionFailure ?
             <div className="mx_EventTile_keyRequestInfo">
                 <span className="mx_EventTile_keyRequestInfo_text">
                     { keyRequestInfoContent }
+                    &nbsp;-&nbsp;
+                    { importKeys }
                 </span>
                 <ToolTipButton helpText={keyRequestHelpText} />
             </div> : null;
