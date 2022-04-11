@@ -86,7 +86,9 @@ export default React.createClass({
                 type: 'text/plain;charset=us-ascii',
             });
             FileSaver.saveAs(blob, 'tchap-keys.txt');
+            // :TCHAP: don't close too fast
         }).then(() => {
+            // :TCHAP: added a confirmation modal
             Modal.createTrackedDialogAsync('Export E2E Keys Success', '',
                 import('../../../async-components/views/dialogs/ExportE2eKeysSuccessDialog'),
                 {
