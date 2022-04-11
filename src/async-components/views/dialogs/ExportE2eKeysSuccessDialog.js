@@ -56,6 +56,10 @@ export default React.createClass({
                 title={_t("Export room keys successful")}
             >
                 <div className="mx_Dialog_content">
+                    <div className="tc_exportE2eKeysSuccessDialog_img">
+                        <img src={require('../../../../res/img/tchap/export-logo.svg')} alt="Export logo" width="70" />
+                    </div>
+
                     <p>{_t('Your Tchap Keys (encryption keys) have been saved successfully.')}</p>
                     <p>{_t('You can import them the next time you log in to unlock your messages.')}</p>
                     <p>{_t("Messages received after this save cannot be unlocked. So you won't be able to read them.")}</p>

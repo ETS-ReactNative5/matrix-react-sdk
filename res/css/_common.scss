@@ -670,10 +670,13 @@ textarea {
     max-width: 150px;
 }
 
-.tc_TwoColumn_block_image {
-
+.tc_exportE2eKeysSuccessDialog_img {
+    text-align: center;
 }
 
+.mx_exportE2eKeysSuccessDialog .mx_Dialog_content {
+    margin-bottom: 10px;
+}
 
 .tc_LinkSharing_Helper {
     position: relative;

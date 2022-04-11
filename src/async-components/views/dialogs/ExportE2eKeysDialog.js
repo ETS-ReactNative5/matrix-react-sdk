@@ -127,7 +127,7 @@ export default React.createClass({
         return (
             <BaseDialog className='mx_exportE2eKeysDialog'
                 onFinished={this.props.onFinished}
-                title={_t("Export room keys (Tchap Keys)")}
+                title={_t("Export room keys")}
             >
                 <form onSubmit={this._onPassphraseFormSubmit}>
                     <div className="mx_Dialog_content">
