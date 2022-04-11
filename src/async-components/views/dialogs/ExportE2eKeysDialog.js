@@ -22,6 +22,7 @@ import { _t } from '../../../languageHandler';
 import * as Matrix from 'matrix-js-sdk';
 import * as MegolmExportEncryption from '../../../utils/MegolmExportEncryption';
 import sdk from '../../../index';
+import Modal from '../../../Modal';
 
 const PHASE_EDIT = 1;
 const PHASE_EXPORTING = 2;
@@ -85,7 +86,17 @@ export default React.createClass({
                 type: 'text/plain;charset=us-ascii',
             });
             FileSaver.saveAs(blob, 'tchap-keys.txt');
-            this.props.onFinished(true);
+            // :TCHAP: don't close too fast
+        }).then(() => {
+            // :TCHAP: added a confirmation modal
+            Modal.createTrackedDialogAsync('Export E2E Keys Success', '',
+                import('../../../async-components/views/dialogs/ExportE2eKeysSuccessDialog'),
+                {
+                    onFinished: () => {
+                        this.props.onFinished(true);
+                    },
+                },
+            );
         }).catch((e) => {
             console.error("Error exporting e2e keys:", e);
             if (this._unmounted) {

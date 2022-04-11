@@ -415,7 +415,7 @@ textarea {
 
 .mx_Dialog button.danger, .mx_Dialog input[type="submit"].danger {
     background-color: $warning-color;
-    border: solid 1px $warning-color;
+    border: unset !important;
     color: $accent-fg-color;
 }
 
@@ -647,6 +647,36 @@ textarea {
     color: $input-darker-fg-color;
 }
 
+.tc_TwoColumn_block {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    margin-bottom: -40px;
+}
+
+.tc_TwoColumn_block_content {
+    width: 42%;
+    text-align: center;
+    background-color: #F2F1F8;
+    border-radius: 20px;
+    padding: 25px 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.tc_TwoColumn_block_content button {
+    max-width: 150px;
+}
+
+.tc_exportE2eKeysSuccessDialog_img {
+    text-align: center;
+}
+
+.mx_exportE2eKeysSuccessDialog .mx_Dialog_content {
+    margin-bottom: 10px;
+}
 
 .tc_LinkSharing_Helper {
     position: relative;

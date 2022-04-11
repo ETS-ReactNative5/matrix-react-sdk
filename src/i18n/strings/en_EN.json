@@ -1687,7 +1687,7 @@
     "How?": "How?",
     "I understand": "I understand",
     "OR": "OR",
-    "Before log-out": "Before log-out",
+    "Before log-out": "Save your Tchap Keys before log out",
     "By logging-out you can lose the encryption keys necessary to access your encrypted messages (<a>learn more</a>).": "By logging-out you can lose the encryption keys necessary to access your encrypted messages (<a>learn more</a>).",
     "To avoid this it's strongly recommended to:": "To avoid this it's strongly recommended to:",
     "Stay connected from at least one other device": "Stay connected from at least one other device",
@@ -1719,5 +1719,13 @@
     "Enter passphrase (8 characters minimum)": "Enter passphrase (8 characters minimum)",
     "Agree or Disagree": "Agree or Disagree",
     "Like or Dislike": "Like or Dislike",
+    "Export room keys successful": "Clés Tchap sauvegardées !",
+    "Your Tchap Keys (encryption keys) have been saved successfully.": "Your Tchap Keys (encryption keys) have been saved successfully.",
+    "You can import them the next time you log in to unlock your messages.": "You can import them the next time you log in to unlock your messages.",
+    "Messages received after this save cannot be unlocked. So you won't be able to read them.": "Messages received after this save cannot be unlocked. So you won't be able to read them.",
+    "Save keys": "Save keys",
+    "<b>Without your Tchap Keys, you will not be able to read your messages</b> the next time you log in because they will be locked. This is a Tchap security measure.": "<b>Without your Tchap Keys, you will not be able to read your messages</b> the next time you log in because they will be locked. This is a Tchap security measure.",
+    "<b>Can you currently read your messages on another device?</b> You can disconnect. This other device automatically backs up your Tchat Keys and messages.": "<b>Can you currently read your messages on another device?</b> You can disconnect. This other device automatically backs up your Tchat Keys and messages.",
+    "<b>You don't have another device connected to Tchap?</b> Back up your Tchap Keys. These keys will unlock current messages, but not those received after saving.": "<b>You don't have another device connected to Tchap?</b> Back up your Tchap Keys. These keys will unlock current messages, but not those received after saving."
     "<requestLink>Import from file</requestLink>": "<requestLink>Import from file</requestLink>"
 }
