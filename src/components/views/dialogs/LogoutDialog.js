@@ -211,7 +211,9 @@ export default class LogoutDialog extends React.Component {
                             <div className="tc_TwoColumn_block_image">
                                 <img src={require('../../../../res/img/tchap/export-logo.svg')} alt="Export logo" width="70" />
                             </div>
-                            <p>{_t("<b>You don't have another device connected to Tchap?</b> Back up your Tchap Keys. These keys will unlock current messages, but not those received after saving.")}</p>
+                            <p>{_t("<b>You don't have another device connected to Tchap?</b> Back up your Tchap Keys. These keys will unlock current messages, but not those received after saving.", {}, {
+                                b: (sub) => <b>{sub}</b>,
+                            })}</p>
                             <button className="mx_Dialog_primary" onClick={this._onExportE2eKeysClicked}>
                                 {_t("Save keys")}
                             </button>
