@@ -35,6 +35,7 @@ module.exports = React.createClass({
         let text;
         if (event && event.msgtype && event.msgtype === "m.bad.encrypted") {
             text = _t("Decryption fail: Please open Tchap on an other connected device to allow key sharing.");
+
         } else {
             text = event.body;
         }

@@ -1650,7 +1650,7 @@
     "Your password must include a lower-case letter, an upper-case letter, a number and a symbol and be at a minimum 8 characters in length.": "Your password must include a lower-case letter, an upper-case letter, a number and a symbol and be at a minimum 8 characters in length.",
     "This password is too weak. It must include a lower-case letter, an upper-case letter, a number and a symbol and be at a minimum 8 characters in length.": "This password is too weak. It must include a lower-case letter, an upper-case letter, a number and a symbol and be at a minimum 8 characters in length.",
     "Password too weak !": "Password too weak !",
-    "Decryption fail: Please open Tchap on an other connected device to allow key sharing.": "Decryption fail: Please open Tchap on an other connected device to allow key sharing.",
+    "Decryption fail: Please open Tchap on an other connected device to allow key sharing.": "Posts locked for security. Collect your Tchap Keys to unlock your messages.",
     "** Unable to decrypt: The sender's device has not sent us the keys for this message. **": "Unable to decrypt: The sender's device has not sent us the keys for this message.",
     "Information: The domain of your email address is not declared in Tchap. If you have received an invitation, you will be able to create a \"guest\" account, allowing only to participate in private exchanges to which you are invited.": "Information: The domain of your email address is not declared in Tchap. If you have received an invitation, you will be able to create a \"guest\" account, allowing only to participate in private exchanges to which you are invited.",
     "Room open to external users": "Room open to external users",
@@ -1727,4 +1727,5 @@
     "<b>Without your Tchap Keys, you will not be able to read your messages</b> the next time you log in because they will be locked. This is a Tchap security measure.": "<b>Without your Tchap Keys, you will not be able to read your messages</b> the next time you log in because they will be locked. This is a Tchap security measure.",
     "<b>Can you currently read your messages on another device?</b> You can disconnect. This other device automatically backs up your Tchat Keys and messages.": "<b>Can you currently read your messages on another device?</b> You can disconnect. This other device automatically backs up your Tchat Keys and messages.",
     "<b>You don't have another device connected to Tchap?</b> Back up your Tchap Keys. These keys will unlock current messages, but not those received after saving.": "<b>You don't have another device connected to Tchap?</b> Back up your Tchap Keys. These keys will unlock current messages, but not those received after saving."
+    "<requestLink>Import from file</requestLink>": "<requestLink>Import from file</requestLink>"
 }
