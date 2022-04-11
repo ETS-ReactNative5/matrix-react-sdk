@@ -191,8 +191,8 @@ export default class LogoutDialog extends React.Component {
             dialogContent = <div>
                 <div className="mx_Dialog_content" id='mx_Dialog_content'>
                     <div>
-                        <p>{_t('By logging-out you can lose the encryption keys necessary to access your encrypted messages (<a>learn more</a>).', {}, {
-                            'a': (sub) => <a href={SdkConfig.get().base_host_url + SdkConfig.get().generic_endpoints.encryption_info} rel='noreferrer nofollow noopener' target='_blank'>{sub}</a>,
+                        <p>{_t('<b>Without your Tchap Keys, you will not be able to read your messages</b> the next time you log in because they will be locked. This is a Tchap security measure.', {}, {
+                            b: (sub) => <b>{sub}</b>,
                         })}</p>
                     </div>
                     <div className="tc_TwoColumn_block">
@@ -200,7 +200,9 @@ export default class LogoutDialog extends React.Component {
                             <div className="tc_TwoColumn_block_image">
                                 <img src={require('../../../../res/img/tchap/multi-device.svg')} alt="Login logo" width="120" />
                             </div>
-                            <p>{_t("Stay connected from at least one other device")}</p>
+                            <p>{_t("<b>Can you currently read your messages on another device?</b> You can disconnect. This other device automatically backs up your Tchat Keys and messages.", {}, {
+                                b: (sub) => <b>{sub}</b>,
+                            })}</p>
                             <button className="danger" onClick={this._onLogoutConfirm}>
                                 {_t("Sign out")}
                             </button>
@@ -209,7 +211,7 @@ export default class LogoutDialog extends React.Component {
                             <div className="tc_TwoColumn_block_image">
                                 <img src={require('../../../../res/img/tchap/export-logo.svg')} alt="Export logo" width="70" />
                             </div>
-                            <p>{_t("Export your encryption keys")}</p>
+                            <p>{_t("<b>You don't have another device connected to Tchap?</b> Back up your Tchap Keys. These keys will unlock current messages, but not those received after saving.")}</p>
                             <button className="mx_Dialog_primary" onClick={this._onExportE2eKeysClicked}>
                                 {_t("Save keys")}
                             </button>

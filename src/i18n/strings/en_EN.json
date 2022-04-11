@@ -1723,5 +1723,8 @@
     "Your Tchap Keys (encryption keys) have been saved successfully.": "Your Tchap Keys (encryption keys) have been saved successfully.",
     "You can import them the next time you log in to unlock your messages.": "You can import them the next time you log in to unlock your messages.",
     "Messages received after this save cannot be unlocked. So you won't be able to read them.": "Messages received after this save cannot be unlocked. So you won't be able to read them.",
-    "Save keys": "Save keys"
+    "Save keys": "Save keys",
+    "<b>Without your Tchap Keys, you will not be able to read your messages</b> the next time you log in because they will be locked. This is a Tchap security measure.": "<b>Without your Tchap Keys, you will not be able to read your messages</b> the next time you log in because they will be locked. This is a Tchap security measure.",
+    "<b>Can you currently read your messages on another device?</b> You can disconnect. This other device automatically backs up your Tchat Keys and messages.": "<b>Can you currently read your messages on another device?</b> You can disconnect. This other device automatically backs up your Tchat Keys and messages.",
+    "<b>You don't have another device connected to Tchap?</b> Back up your Tchap Keys. These keys will unlock current messages, but not those received after saving.": "<b>You don't have another device connected to Tchap?</b> Back up your Tchap Keys. These keys will unlock current messages, but not those received after saving."
 }
