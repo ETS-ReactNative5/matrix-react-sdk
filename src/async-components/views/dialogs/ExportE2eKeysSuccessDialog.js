@@ -58,15 +58,15 @@ export default React.createClass({
             >
                 <div className="mx_Dialog_content">
                     <div className="tc_exportE2eKeysSuccessDialog_img">
-                        <img src={require('../../../../res/img/tchap/export-logo.svg')} alt="Export logo" width="70" />
+                        <img src={require('../../../../res/img/tchap/key-saved.svg')} alt="Export logo" width="70" />
                     </div>
 
-                    <p>{_t('Your Tchap Keys (encryption keys) have been saved successfully.')}</p>
+                    <strong>{_t('Your Tchap Keys (encryption keys) have been saved successfully.')}</strong>
                     <p>{_t('You can import them the next time you log in to unlock your messages.')}</p>
                     <p>{_t("Messages received after this save cannot be unlocked. So you won't be able to read them.")}</p>
                 </div>
                 <div className='mx_Dialog_buttons'>
-                    <button className="mx_Dialog_primary danger" onClick={this._onLogoutConfirm}>
+                    <button className="mx_Dialog_primary" onClick={this._onLogoutConfirm}>
                         { _t("Sign out") }
                     </button>
                 </div>

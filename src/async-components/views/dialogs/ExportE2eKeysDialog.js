@@ -92,8 +92,8 @@ export default React.createClass({
             Modal.createTrackedDialogAsync('Export E2E Keys Success', '',
                 import('../../../async-components/views/dialogs/ExportE2eKeysSuccessDialog'),
                 {
-                    onFinished: () => {
-                        this.props.onFinished(true);
+                    onFinished: (res) => {
+                        this.props.onFinished(res || true);
                     },
                 },
             );
@@ -139,7 +139,7 @@ export default React.createClass({
                                 'you have received in encrypted rooms to a local file. You ' +
                                 'will then be able to import the file into another Matrix ' +
                                 'client in the future, so that client will also be able to ' +
-                                'decrypt these messages.',
+                                'decrypt these messages.', {}, {b: (sub) => <b>{sub}</b>},
                             ) }
                         </p>
                         <p>
@@ -151,6 +151,9 @@ export default React.createClass({
                                 'data. It will only be possible to import the data by using the ' +
                                 'same passphrase.',
                             ) }
+                        </p>
+                        <p>
+                            {_t('Messages received after this save cannot be unlocked. So you won\'t be able to read them.')}
                         </p>
                         <div className='error'>
                             { this.state.errStr }
@@ -185,7 +188,7 @@ export default React.createClass({
                         </div>
                     </div>
                     <div className='mx_Dialog_buttons'>
-                        <input className='mx_Dialog_primary' type='submit' value={_t('Export')}
+                        <input className='mx_Dialog_primary' type='submit' value={_t('Save keys')}
                              disabled={disableForm}
                         />
                         <button onClick={this._onCancelClick} disabled={disableForm}>

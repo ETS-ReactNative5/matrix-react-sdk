@@ -126,14 +126,16 @@ export default React.createClass({
                                 'that you had previously exported from another Matrix ' +
                                 'client. You will then be able to decrypt any ' +
                                 'messages that the other client could decrypt.',
-                            ) }
+                            {}, {
+                                b: (sub) => <b>{sub}</b>,
+                            }) }
                         </p>
-                        <p>
-                            { _t(
-                                'The export file will be protected with a passphrase. ' +
-                                'You should enter the passphrase here, to decrypt the file.',
-                            ) }
-                        </p>
+                        {/*<p>*/}
+                        {/*    { _t(*/}
+                        {/*        'The export file will be protected with a passphrase. ' +*/}
+                        {/*        'You should enter the passphrase here, to decrypt the file.',*/}
+                        {/*    ) }*/}
+                        {/*</p>*/}
                         <div className='error'>
                             { this.state.errStr }
                         </div>
@@ -141,7 +143,7 @@ export default React.createClass({
                             <div className='mx_E2eKeysDialog_inputRow'>
                                <div className='mx_E2eKeysDialog_inputLabel'>
                                    <label htmlFor='importFile'>
-                                       { _t("File to import") }
+                                       { _t("File to import") + ' :'}
                                    </label>
                                </div>
                                <div className='mx_E2eKeysDialog_inputCell'>
@@ -151,6 +153,7 @@ export default React.createClass({
                                        disabled={disableForm} />
                                </div>
                             </div>
+                            <br/>
                             <div className='mx_E2eKeysDialog_inputRow'>
                                <div className='mx_E2eKeysDialog_inputLabel'>
                                    <label htmlFor='passphrase'>
