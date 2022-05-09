@@ -396,7 +396,6 @@ module.exports = React.createClass({
 
         let mainAvatarClass = avatarClasses;
         if (!this._isDirectMessageRoom(this.props.room.roomId) && !isNotice) {
-            mainAvatarClass += " mx_RoomTile_avatar_room";
             mainAvatarClass += ` mx_RoomTile_avatar_${Tchap.getAccessRules(this.props.room.roomId)}`;
         }
 
