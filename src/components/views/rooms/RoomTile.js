@@ -394,8 +394,6 @@ module.exports = React.createClass({
             }
         }
 
-        let mainAvatarClass = avatarClasses;
-                
         return <AccessibleButton tabIndex="0"
                                  className={classes}
                                  onClick={this.onClick}
@@ -403,7 +401,7 @@ module.exports = React.createClass({
                                  onMouseLeave={this.onMouseLeave}
                                  onContextMenu={this.onContextMenu}
         >
-            <div className={mainAvatarClass}>
+            <div className={avatarClasses}>
                 <div className="mx_RoomTile_avatar_container">
                     <RoomAvatar room={this.props.room} width={24} height={24} />
                 </div>
